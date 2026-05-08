@@ -1,9 +1,9 @@
 const express = require('express');
 const logger = require('./middleware/logger');
-const { isAdmin } = require('./middleware/auth'); // ---> Import authorization middleware
+const userRoutes = require('./routes/userRoutes'); 
 
 const app = express();
-const PORT = 3000; // ---> Default port from requirements
+const PORT = 3000; // --- Default port from requirements ---
 
 // --- Middleware to parse JSON bodies ---
 app.use(express.json());
@@ -21,22 +21,22 @@ app.get('/', (req, res) => {
     });
 });
 
-// --- Protected route: Delete user (Requires admin role) ---
-// --- Logger -> isAdmin -> Controller logic ---
-app.delete('/users/:id', isAdmin, (req, res) => {
-    const userId = req.params.id;
-    
-    res.json({
-        success: true,
-        data: { 
-            message: `User with ID ${userId} has been deleted successfully.`,
-            deletedId: userId
-        },
-        error: null
+// --- Mount the user routes under /users prefix ---
+app.use('/users', userRoutes);
+
+// --- Global 404 handler for unknown routes ---
+app.use((req, res) => {
+    res.status(404).json({ 
+        success: false, 
+        data: null, 
+        error: { 
+            code: "NOT_FOUND", 
+            message: "Route not found" 
+        } 
     });
 });
 
 // --- Start the application ---
 app.listen(PORT, () => {
-    console.log(`--- comment ---// App is listening on http://localhost:${PORT}`);
+    console.log(`// --- App is listening on http://localhost:${PORT} ---`);
 });
