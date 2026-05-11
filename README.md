@@ -1,36 +1,331 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+﻿# BeaverUP Backend API
 
-## Getting Started
+BeaverUP is a language learning backend built with Node.js and Express. It uses mock in-memory data for Assignment 2. No real database and no real AI API are connected yet.
 
-First, run the development server:
+## How to Install
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How to Run
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+node src/app/app.js
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Base URL:
 
-## Learn More
+```text
+http://localhost:3000
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Response Format
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+All API responses use JSON.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Success response:
 
-## Deploy on Vercel
+```json
+{
+  "success": true,
+  "data": {},
+  "error": null
+}
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Error response:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```json
+{
+  "success": false,
+  "data": null,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Short readable message.",
+    "details": {}
+  }
+}
+```
+
+## Authorization
+
+Some requests use simple mock authorization headers:
+
+```text
+x-user-role: admin
+x-user-id: 1
+```
+
+Roles:
+
+```text
+admin | manager | user
+```
+
+## Status Codes
+
+```text
+200 OK - successful GET, PUT, DELETE
+201 Created - successful POST
+400 Bad Request - invalid or missing input
+403 Forbidden - user is not allowed to access the resource
+404 Not Found - route or item was not found
+500 Internal Server Error - unexpected server error
+```
+
+## Resources
+
+### Users
+
+User fields:
+
+```json
+{
+  "userId": 1,
+  "firstName": "Ido",
+  "lastName": "Israeli",
+  "userRole": "admin",
+  "userNativeLanguage": "Hebrew",
+  "languageToLearn": "Spanish",
+  "currentLevel": "B2",
+  "createDate": "2026-05-06T12:00:00Z",
+  "updateDate": "2026-05-06T12:00:00Z"
+}
+```
+
+Endpoints:
+
+```text
+GET /users
+GET /users/:id
+POST /users
+PUT /users/:id
+DELETE /users/:id
+```
+
+Required fields for POST:
+
+```text
+firstName, lastName, userRole, userNativeLanguage, languageToLearn, currentLevel
+```
+
+Valid levels:
+
+```text
+A1 | A2 | B1 | B2 | C1 | C2
+```
+
+Level meaning:
+
+```text
+A1 - Beginner: understands and uses very basic phrases.
+A2 - Elementary: handles simple daily conversations.
+B1 - Intermediate: communicates in common situations.
+B2 - Upper intermediate: speaks clearly on many topics.
+C1 - Advanced: uses flexible and natural language.
+C2 - Proficient: near-native understanding and expression.
+```
+
+### Learning Items
+
+Learning items store the words, phrases, rewrites, and expressions the user learned.
+
+Learning item fields:
+
+```json
+{
+  "itemId": 1,
+  "userId": 1,
+  "language": "Spanish",
+  "type": "phrase",
+  "sourceText": "I'd like to get to...",
+  "meaning": "A polite way to say I want to go to...",
+  "context": "travel conversation"
+}
+```
+
+Endpoints:
+
+```text
+GET /learning-items
+GET /learning-items/:id
+GET /learning-items/user/:userId
+POST /learning-items
+PUT /learning-items/:id
+DELETE /learning-items/:id
+```
+
+Required fields for POST:
+
+```text
+userId, language, type, sourceText, meaning
+```
+
+Valid types:
+
+```text
+word | phrase | rewrite | expression
+```
+
+### Interactions
+
+Interactions store the main BeaverUP learning flow. This includes Conversation, Story, and Translate modes.
+
+For now, `POST /interactions` returns a mock AI-style response. Later, this mock part can be replaced with a real AI API call.
+
+Interaction fields:
+
+```json
+{
+  "interactionId": 1,
+  "userId": 1,
+  "mode": "conversation",
+  "interactionType": "conversation_turn",
+  "language": "Spanish",
+  "level": "B1",
+  "topic": "travel",
+  "previousTopic": null,
+  "previousInteractionId": null,
+  "wordGroup": [],
+  "userInput": "I want go to train station",
+  "nativeRewrite": "I want to go to the train station.",
+  "higherLevelRewrite": "I'd like to get to the train station.",
+  "storyText": null,
+  "wordTranslations": [],
+  "translation": null,
+  "learningItems": [],
+  "nextPrompt": "How would you ask for a ticket?"
+}
+```
+
+Mode behavior:
+
+```text
+conversation - uses conversation_turn and returns nativeRewrite, higherLevelRewrite, learningItems, and nextPrompt.
+story - uses story_start or story_followup and returns storyText, wordTranslations, learningItems, and nextPrompt.
+translate - uses translate_request and returns translation and possible learningItems.
+```
+
+Story flow:
+
+```text
+story_start - creates the first story from language, level, optional topic, and optional wordGroup.
+story_followup - receives the user's difficult or interesting words in userInput and creates a new story.
+wordGroup - optional array of words for the first story.
+previousInteractionId - links a follow-up to the previous story interaction.
+previousTopic - helps ensure the next story uses a different topic.
+```
+
+Endpoints:
+
+```text
+GET /interactions
+GET /interactions/:id
+GET /interactions/user/:userId
+POST /interactions
+PUT /interactions/:id
+DELETE /interactions/:id
+```
+
+Required fields for POST:
+
+```text
+Base: userId, mode, language, level
+conversation_turn: userInput
+translate_request: userInput
+story_start: userInput is not required; wordGroup is optional
+story_followup: userInput
+```
+
+Valid modes:
+
+```text
+conversation | story | translate
+```
+
+Valid interaction types:
+
+```text
+conversation_turn | story_start | story_followup | translate_request
+```
+
+## Example Requests
+
+Create an interaction:
+
+```http
+POST /interactions
+x-user-role: user
+x-user-id: 1
+Content-Type: application/json
+```
+
+```json
+{
+  "userId": 1,
+  "mode": "conversation",
+  "interactionType": "conversation_turn",
+  "language": "Spanish",
+  "level": "B1",
+  "topic": "travel",
+  "userInput": "I want go to train station"
+}
+```
+
+Create a story start interaction:
+
+```json
+{
+  "userId": 1,
+  "mode": "story",
+  "interactionType": "story_start",
+  "language": "Spanish",
+  "level": "A1",
+  "topic": "family",
+  "wordGroup": ["Hola", "casa", "madre"]
+}
+```
+
+Create a story follow-up interaction:
+
+```json
+{
+  "userId": 1,
+  "mode": "story",
+  "interactionType": "story_followup",
+  "language": "Spanish",
+  "level": "A1",
+  "topic": "market",
+  "previousTopic": "family",
+  "previousInteractionId": 3,
+  "userInput": "madre, casa"
+}
+```
+
+Create a learning item:
+
+```http
+POST /learning-items
+x-user-role: user
+x-user-id: 1
+Content-Type: application/json
+```
+
+```json
+{
+  "userId": 1,
+  "language": "Spanish",
+  "type": "phrase",
+  "sourceText": "I'd like to get to...",
+  "meaning": "A polite way to say I want to go to...",
+  "context": "travel conversation"
+}
+```
+
+## Assumptions
+
+IDs are generated in memory by taking the highest current ID and adding 1. Data resets when the server restarts.
+
+
+

@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const { isAdmin, isOwnerOrAdmin } = require('../middleware/auth');
@@ -9,9 +9,13 @@ router.get('/', isAdmin, userController.getAllUsers);
 // --- GET /users/:id (Admin or Owner) ---
 router.get('/:id', isOwnerOrAdmin, userController.getUserById);
 
-// --- POST /users/:id (Admin or Owner) ---
-// --- Note: Using :id in path to verify ownership during creation/post ---
+// --- POST /users ---
 router.post('/', userController.createUser);
+
+// ***
+// --- PUT /users/:id (Admin or Owner) ---
+router.put('/:id', isOwnerOrAdmin, userController.updateUser);
+// ***
 
 // --- DELETE /users/:id (Admin only) ---
 router.delete('/:id', isAdmin, userController.deleteUser);

@@ -1,14 +1,18 @@
-// --- Middleware to verify if the user is an Admin ---
+﻿// --- Middleware to verify if the user is an Admin ---
 const isAdmin = (req, res, next) => {
     const role = req.headers['x-user-role'];
 
     if (role === 'admin') {
-        next(); // --- Role is admin, proceed ---
+        next();
     } else {
         res.status(403).json({
             success: false,
             data: null,
-            error: { code: "FORBIDDEN", message: "Admin role required for this action." }
+            error: {
+                code: 'FORBIDDEN',
+                message: 'Admin role required for this action.',
+                details: { requiredRole: 'admin' }
+            }
         });
     }
 };
@@ -16,19 +20,19 @@ const isAdmin = (req, res, next) => {
 // --- Middleware to verify if the user is an Admin OR the Owner of the data ---
 const isOwnerOrAdmin = (req, res, next) => {
     const role = req.headers['x-user-role'];
-    const loggedInUserId = req.headers['x-user-id']; // --- ID of the person making the request ---
-    const targetId = req.params.id; // --- ID from the URL path ---
+    const loggedInUserId = req.headers['x-user-id'];
+    const targetId = req.params.userId || req.params.id || req.body.userId;
 
-    // --- Access allowed if: user is Admin OR logged-in ID matches target ID ---
-    if (role === 'admin' || (loggedInUserId && loggedInUserId === targetId)) {
+    if (role === 'admin' || (loggedInUserId && String(loggedInUserId) === String(targetId))) {
         next();
     } else {
         res.status(403).json({
             success: false,
             data: null,
-            error: { 
-                code: "FORBIDDEN", 
-                message: "You can only access your own data or must be an admin." 
+            error: {
+                code: 'FORBIDDEN',
+                message: 'You can only access your own data or must be an admin.',
+                details: { requiredOwnerId: targetId || null }
             }
         });
     }
