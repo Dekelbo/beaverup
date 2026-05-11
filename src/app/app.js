@@ -1,5 +1,4 @@
-﻿// היי דקל התחברתי
-const express = require('express');
+﻿const express = require('express');
 const logger = require('./middleware/logger');
 const userRoutes = require('./routes/userRoutes');
 // ***
@@ -79,3 +78,4 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`// --- App is listening on http://localhost:${PORT} ---`);
 });
+
