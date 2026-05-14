@@ -1,32 +1,33 @@
-﻿// --- Middleware to verify if the user is an Admin ---
+// --- Middleware to verify if the user is an Admin ---
 const isAdmin = (req, res, next) => {
     const role = req.headers['x-user-role'];
 
     if (role === 'admin') {
-        next();
-    } else {
-        res.status(403).json({
-            success: false,
-            data: null,
-            error: {
-                code: 'FORBIDDEN',
-                message: 'Admin role required for this action.',
-                details: { requiredRole: 'admin' }
-            }
-        });
+        return next();
     }
+
+    return res.status(403).json({
+        success: false,
+        data: null,
+        error: {
+            code: 'FORBIDDEN',
+            message: 'Admin role required for this action.',
+            details: { requiredRole: 'admin' }
+        }
+    });
 };
 
-// --- Middleware to verify if the user is an Admin OR the Owner of the data ---
-const isOwnerOrAdmin = (req, res, next) => {
-    const role = req.headers['x-user-role'];
-    const loggedInUserId = req.headers['x-user-id'];
-    const targetId = req.params.userId || req.params.id || req.body.userId;
+const isOwnerOrAdminByUserId = (getUserId) => {
+    return (req, res, next) => {
+        const role = req.headers['x-user-role'];
+        const loggedInUserId = req.headers['x-user-id'];
+        const targetId = getUserId(req);
 
-    if (role === 'admin' || (loggedInUserId && String(loggedInUserId) === String(targetId))) {
-        next();
-    } else {
-        res.status(403).json({
+        if (role === 'admin' || (loggedInUserId && String(loggedInUserId) === String(targetId))) {
+            return next();
+        }
+
+        return res.status(403).json({
             success: false,
             data: null,
             error: {
@@ -35,7 +36,30 @@ const isOwnerOrAdmin = (req, res, next) => {
                 details: { requiredOwnerId: targetId || null }
             }
         });
-    }
+    };
 };
 
-module.exports = { isAdmin, isOwnerOrAdmin };
+const isOwnerOrAdmin = isOwnerOrAdminByUserId(req => req.params.userId || req.params.id || req.body.userId);
+const isOwnerOrAdminByUserParam = isOwnerOrAdminByUserId(req => req.params.userId);
+const isOwnerOrAdminByBodyUserId = isOwnerOrAdminByUserId(req => req.body.userId);
+
+const isOwnerOrAdminForResource = (items, idField, ownerField, paramName = 'id') => {
+    return (req, res, next) => {
+        const resourceId = parseInt(req.params[paramName]);
+        const item = items.find(currentItem => currentItem[idField] === resourceId);
+
+        if (!item) {
+            return next();
+        }
+
+        return isOwnerOrAdminByUserId(() => item[ownerField])(req, res, next);
+    };
+};
+
+module.exports = {
+    isAdmin,
+    isOwnerOrAdmin,
+    isOwnerOrAdminByUserParam,
+    isOwnerOrAdminByBodyUserId,
+    isOwnerOrAdminForResource
+};

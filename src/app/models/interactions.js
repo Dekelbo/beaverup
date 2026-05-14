@@ -1,4 +1,4 @@
-// --- Mock interactions database in-memory ---
+// --- Mock interactions database ---
 let interactions = [
     {
         interactionId: 1,

@@ -1,4 +1,4 @@
-// --- Mock user database in-memory ---
+// --- Mock user database ---
 let users = [
     {
         userId: 1,

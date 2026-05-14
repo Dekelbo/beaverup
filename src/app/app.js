@@ -1,7 +1,8 @@
-const express = require('express');
+﻿const express = require('express');
 const logger = require('./middleware/logger');
-const userRoutes = require('./routes/userRoutes');
+
 // --- Import BeaverUP resource routes ---
+const userRoutes = require('./routes/userRoutes'); 
 const learningItemRoutes = require('./routes/learningItemRoutes');
 const interactionRoutes = require('./routes/interactionRoutes');
 
@@ -14,7 +15,7 @@ app.use(express.json());
 // --- Apply logger globally to all requests ---
 app.use(logger);
 
-// --- Initial route handling ---
+// --- initial route handling ---
 app.get('/', (req, res) => {
     res.status(200).json({
         success: true,
@@ -23,23 +24,21 @@ app.get('/', (req, res) => {
     });
 });
 
-// --- Mount the user routes under /users prefix ---
+// Register route groups under their base API endpoints paths
 app.use('/users', userRoutes);
-
-// --- Mount BeaverUP resource routes ---
 app.use('/learning-items', learningItemRoutes);
 app.use('/interactions', interactionRoutes);
 
+
 // --- Global 404 handler for unknown routes ---
 app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        data: null,
-        error: {
-            code: 'NOT_FOUND',
-            message: 'Route not found.',
-            details: { path: req.originalUrl }
-        }
+    res.status(404).json({ 
+        success: false, 
+        data: null, 
+        error: { 
+            code: "NOT_FOUND", 
+            message: "Route not found" 
+        } 
     });
 });
 

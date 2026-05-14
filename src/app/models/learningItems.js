@@ -1,4 +1,5 @@
-// --- Mock learning items database in-memory ---
+﻿
+// --- Mock learning items database  ---
 let learningItems = [
     {
         itemId: 1,
@@ -28,5 +29,6 @@ let learningItems = [
         context: 'asking for directions'
     }
 ];
+
 
 module.exports = learningItems;

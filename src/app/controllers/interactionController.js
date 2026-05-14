@@ -9,47 +9,12 @@ const sendError = (res, status, code, message, details = {}) => {
     });
 };
 
-// --- Check owner or admin access ---
-const canAccessUserData = (req, userId) => {
-    const role = req.headers['x-user-role'];
-    const loggedInUserId = parseInt(req.headers['x-user-id']);
-    return role === 'admin' || loggedInUserId === userId;
-};
-
-// --- Validate CEFR level ---
-const isValidLevel = (level) => ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(level);
-
-// --- Validate interaction mode ---
-const isValidMode = (mode) => ['conversation', 'story', 'translate'].includes(mode);
-
-// --- Validate interaction type ---
-const isValidInteractionType = (type) => ['conversation_turn', 'story_start', 'story_followup', 'translate_request'].includes(type);
-
-// --- Validate required interaction fields ---
+// --- Validate mode-specific interaction rules ---
 const validateInteractionInput = (body, requireAllFields = true) => {
-    const interactionType = body.interactionType || `${body.mode}_request`;
-    const requiredFields = requireAllFields ? ['userId', 'mode', 'language', 'level'] : [];
+    const interactionType = getInteractionType(body.mode, body.interactionType);
 
-    if (requireAllFields && interactionType !== 'story_start') {
-        requiredFields.push('userInput');
-    }
-
-    const missingFields = requiredFields.filter(field => body[field] === undefined || body[field] === '' || body[field] === null);
-
-    if (missingFields.length > 0) {
-        return { message: 'Missing required interaction fields.', details: { missingFields } };
-    }
-
-    if (body.userId !== undefined && Number.isNaN(parseInt(body.userId))) {
-        return { message: 'Invalid user id.', details: { field: 'userId' } };
-    }
-
-    if (body.mode && !isValidMode(body.mode)) {
-        return { message: 'Invalid interaction mode.', details: { field: 'mode', allowedValues: ['conversation', 'story', 'translate'] } };
-    }
-
-    if (body.interactionType && !isValidInteractionType(body.interactionType)) {
-        return { message: 'Invalid interaction type.', details: { field: 'interactionType', allowedValues: ['conversation_turn', 'story_start', 'story_followup', 'translate_request'] } };
+    if (requireAllFields && interactionType !== 'story_start' && (body.userInput === undefined || body.userInput === '' || body.userInput === null)) {
+        return { message: 'Missing required interaction fields.', details: { missingFields: ['userInput'] } };
     }
 
     if (body.mode === 'story' && body.interactionType && !['story_start', 'story_followup'].includes(body.interactionType)) {
@@ -62,18 +27,6 @@ const validateInteractionInput = (body, requireAllFields = true) => {
 
     if (body.mode === 'translate' && body.interactionType && body.interactionType !== 'translate_request') {
         return { message: 'Invalid translate interaction type.', details: { mode: 'translate', allowedValues: ['translate_request'] } };
-    }
-
-    if (body.level && !isValidLevel(body.level)) {
-        return { message: 'Invalid level.', details: { field: 'level', allowedValues: ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'] } };
-    }
-
-    if (body.wordGroup !== undefined && !Array.isArray(body.wordGroup)) {
-        return { message: 'Invalid word group.', details: { field: 'wordGroup', expectedType: 'array' } };
-    }
-
-    if (body.previousInteractionId !== undefined && body.previousInteractionId !== null && Number.isNaN(parseInt(body.previousInteractionId))) {
-        return { message: 'Invalid previous interaction id.', details: { field: 'previousInteractionId' } };
     }
 
     return null;
@@ -178,18 +131,10 @@ const getAllInteractions = (req, res) => {
 const getInteractionById = (req, res) => {
     try {
         const interactionId = parseInt(req.params.id);
-
-        if (Number.isNaN(interactionId)) {
-            return sendError(res, 400, 'VALIDATION_ERROR', 'Invalid interaction id.', { field: 'id' });
-        }
-
         const interaction = interactions.find(i => i.interactionId === interactionId);
+
         if (!interaction) {
             return sendError(res, 404, 'INTERACTION_NOT_FOUND', 'Interaction not found.');
-        }
-
-        if (!canAccessUserData(req, interaction.userId)) {
-            return sendError(res, 403, 'FORBIDDEN', 'You do not have permission to access this interaction.');
         }
 
         res.status(200).json({ success: true, data: interaction, error: null });
@@ -202,15 +147,6 @@ const getInteractionById = (req, res) => {
 const getInteractionsByUserId = (req, res) => {
     try {
         const userId = parseInt(req.params.userId);
-
-        if (Number.isNaN(userId)) {
-            return sendError(res, 400, 'VALIDATION_ERROR', 'Invalid user id.', { field: 'userId' });
-        }
-
-        if (!canAccessUserData(req, userId)) {
-            return sendError(res, 403, 'FORBIDDEN', 'You do not have permission to access these interactions.');
-        }
-
         const userInteractions = interactions.filter(i => i.userId === userId);
         res.status(200).json({ success: true, data: userInteractions, error: null });
     } catch (error) {
@@ -227,10 +163,6 @@ const createInteraction = (req, res) => {
         }
 
         const userId = parseInt(req.body.userId);
-        if (!canAccessUserData(req, userId)) {
-            return sendError(res, 403, 'FORBIDDEN', 'You do not have permission to create this interaction.');
-        }
-
         const aiResult = buildMockAiResult(req.body);
         const newId = interactions.length > 0 ? Math.max(...interactions.map(i => i.interactionId)) + 1 : 1;
         const newInteraction = {
@@ -265,11 +197,6 @@ const createInteraction = (req, res) => {
 const updateInteraction = (req, res) => {
     try {
         const interactionId = parseInt(req.params.id);
-
-        if (Number.isNaN(interactionId)) {
-            return sendError(res, 400, 'VALIDATION_ERROR', 'Invalid interaction id.', { field: 'id' });
-        }
-
         const validationError = validateInteractionInput(req.body, false);
         if (validationError) {
             return sendError(res, 400, 'VALIDATION_ERROR', validationError.message, validationError.details);
@@ -278,10 +205,6 @@ const updateInteraction = (req, res) => {
         const interaction = interactions.find(i => i.interactionId === interactionId);
         if (!interaction) {
             return sendError(res, 404, 'INTERACTION_NOT_FOUND', 'Interaction not found.');
-        }
-
-        if (!canAccessUserData(req, interaction.userId)) {
-            return sendError(res, 403, 'FORBIDDEN', 'You do not have permission to update this interaction.');
         }
 
         const allowedFields = ['mode', 'interactionType', 'language', 'level', 'topic', 'previousTopic', 'previousInteractionId', 'wordGroup', 'userInput', 'nativeRewrite', 'higherLevelRewrite', 'storyText', 'wordTranslations', 'translation', 'learningItems', 'nextPrompt'];
@@ -301,18 +224,10 @@ const updateInteraction = (req, res) => {
 const deleteInteraction = (req, res) => {
     try {
         const interactionId = parseInt(req.params.id);
-
-        if (Number.isNaN(interactionId)) {
-            return sendError(res, 400, 'VALIDATION_ERROR', 'Invalid interaction id.', { field: 'id' });
-        }
-
         const index = interactions.findIndex(i => i.interactionId === interactionId);
+
         if (index === -1) {
             return sendError(res, 404, 'INTERACTION_NOT_FOUND', 'Interaction not found.');
-        }
-
-        if (!canAccessUserData(req, interactions[index].userId)) {
-            return sendError(res, 403, 'FORBIDDEN', 'You do not have permission to delete this interaction.');
         }
 
         interactions.splice(index, 1);
