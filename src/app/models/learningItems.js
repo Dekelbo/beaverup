@@ -1,4 +1,3 @@
-﻿// ***
 // --- Mock learning items database in-memory ---
 let learningItems = [
     {
@@ -29,6 +28,5 @@ let learningItems = [
         context: 'asking for directions'
     }
 ];
-// ***
 
 module.exports = learningItems;

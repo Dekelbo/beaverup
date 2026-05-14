@@ -1,4 +1,4 @@
-﻿const learningItems = require('../models/learningItems'); // --- Import mock data ---
+const learningItems = require('../models/learningItems'); // --- Import mock data ---
 
 // --- Send a standard error response ---
 const sendError = (res, status, code, message, details = {}) => {
@@ -39,7 +39,6 @@ const validateLearningItemInput = (body, requireAllFields = true) => {
     return null;
 };
 
-// ***
 // --- Get all learning items ---
 const getAllLearningItems = (req, res) => {
     try {
@@ -48,9 +47,7 @@ const getAllLearningItems = (req, res) => {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not get learning items.');
     }
 };
-// ***
 
-// ***
 // --- Get learning item by ID ---
 const getLearningItemById = (req, res) => {
     try {
@@ -74,9 +71,7 @@ const getLearningItemById = (req, res) => {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not get learning item.');
     }
 };
-// ***
 
-// ***
 // --- Get learning items by user ID ---
 const getLearningItemsByUserId = (req, res) => {
     try {
@@ -96,9 +91,7 @@ const getLearningItemsByUserId = (req, res) => {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not get user learning items.');
     }
 };
-// ***
 
-// ***
 // --- Create learning item ---
 const createLearningItem = (req, res) => {
     try {
@@ -129,9 +122,7 @@ const createLearningItem = (req, res) => {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not create learning item.');
     }
 };
-// ***
 
-// ***
 // --- Update learning item ---
 const updateLearningItem = (req, res) => {
     try {
@@ -167,9 +158,7 @@ const updateLearningItem = (req, res) => {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not update learning item.');
     }
 };
-// ***
 
-// ***
 // --- Delete learning item ---
 const deleteLearningItem = (req, res) => {
     try {
@@ -194,7 +183,6 @@ const deleteLearningItem = (req, res) => {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not delete learning item.');
     }
 };
-// ***
 
 module.exports = {
     getAllLearningItems,

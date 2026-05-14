@@ -1,4 +1,4 @@
-﻿const users = require('../models/users'); // --- Import mock data ---
+const users = require('../models/users'); // --- Import mock data ---
 
 // --- Send a standard error response ---
 const sendError = (res, status, code, message, details = {}) => {
@@ -97,7 +97,6 @@ const createUser = (req, res) => {
     }
 };
 
-// ***
 // --- Update user ---
 const updateUser = (req, res) => {
     try {
@@ -130,7 +129,6 @@ const updateUser = (req, res) => {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not update user.');
     }
 };
-// ***
 
 // --- Delete user ---
 const deleteUser = (req, res) => {

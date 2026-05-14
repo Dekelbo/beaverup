@@ -1,4 +1,3 @@
-﻿// ***
 // --- Mock interactions database in-memory ---
 let interactions = [
     {
@@ -115,6 +114,5 @@ let interactions = [
         nextPrompt: 'Which words or phrases were difficult or interesting?'
     }
 ];
-// ***
 
 module.exports = interactions;

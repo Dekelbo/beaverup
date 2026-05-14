@@ -1,11 +1,9 @@
-﻿const express = require('express');
+const express = require('express');
 const logger = require('./middleware/logger');
 const userRoutes = require('./routes/userRoutes');
-// ***
 // --- Import BeaverUP resource routes ---
 const learningItemRoutes = require('./routes/learningItemRoutes');
 const interactionRoutes = require('./routes/interactionRoutes');
-// ***
 
 const app = express();
 const PORT = 3000; // --- Default port from requirements ---
@@ -28,11 +26,9 @@ app.get('/', (req, res) => {
 // --- Mount the user routes under /users prefix ---
 app.use('/users', userRoutes);
 
-// ***
 // --- Mount BeaverUP resource routes ---
 app.use('/learning-items', learningItemRoutes);
 app.use('/interactions', interactionRoutes);
-// ***
 
 // --- Global 404 handler for unknown routes ---
 app.use((req, res) => {
@@ -47,7 +43,6 @@ app.use((req, res) => {
     });
 });
 
-// ***
 // --- Global error handler ---
 app.use((err, req, res, next) => {
     if (err.type === 'entity.parse.failed') {
@@ -72,7 +67,6 @@ app.use((err, req, res, next) => {
         }
     });
 });
-// ***
 
 // --- Start the application ---
 app.listen(PORT, () => {

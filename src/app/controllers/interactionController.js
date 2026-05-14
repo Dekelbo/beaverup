@@ -1,4 +1,4 @@
-﻿const interactions = require('../models/interactions'); // --- Import mock data ---
+const interactions = require('../models/interactions'); // --- Import mock data ---
 
 // --- Send a standard error response ---
 const sendError = (res, status, code, message, details = {}) => {
@@ -22,10 +22,8 @@ const isValidLevel = (level) => ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(le
 // --- Validate interaction mode ---
 const isValidMode = (mode) => ['conversation', 'story', 'translate'].includes(mode);
 
-// ***
 // --- Validate interaction type ---
 const isValidInteractionType = (type) => ['conversation_turn', 'story_start', 'story_followup', 'translate_request'].includes(type);
-// ***
 
 // --- Validate required interaction fields ---
 const validateInteractionInput = (body, requireAllFields = true) => {
@@ -81,7 +79,6 @@ const validateInteractionInput = (body, requireAllFields = true) => {
     return null;
 };
 
-// ***
 // --- Get default interaction type ---
 const getInteractionType = (mode, interactionType) => {
     if (interactionType) {
@@ -98,7 +95,6 @@ const getInteractionType = (mode, interactionType) => {
 
     return 'translate_request';
 };
-// ***
 
 // --- Build a mock AI result ---
 const buildMockAiResult = ({ mode, interactionType, language, level, topic, userInput, wordGroup = [], previousTopic }) => {
@@ -169,7 +165,6 @@ const buildMockAiResult = ({ mode, interactionType, language, level, topic, user
     };
 };
 
-// ***
 // --- Get all interactions ---
 const getAllInteractions = (req, res) => {
     try {
@@ -178,9 +173,7 @@ const getAllInteractions = (req, res) => {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not get interactions.');
     }
 };
-// ***
 
-// ***
 // --- Get interaction by ID ---
 const getInteractionById = (req, res) => {
     try {
@@ -204,9 +197,7 @@ const getInteractionById = (req, res) => {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not get interaction.');
     }
 };
-// ***
 
-// ***
 // --- Get interactions by user ID ---
 const getInteractionsByUserId = (req, res) => {
     try {
@@ -226,9 +217,7 @@ const getInteractionsByUserId = (req, res) => {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not get user interactions.');
     }
 };
-// ***
 
-// ***
 // --- Create interaction with mock AI response ---
 const createInteraction = (req, res) => {
     try {
@@ -271,9 +260,7 @@ const createInteraction = (req, res) => {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not create interaction.');
     }
 };
-// ***
 
-// ***
 // --- Update interaction ---
 const updateInteraction = (req, res) => {
     try {
@@ -309,9 +296,7 @@ const updateInteraction = (req, res) => {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not update interaction.');
     }
 };
-// ***
 
-// ***
 // --- Delete interaction ---
 const deleteInteraction = (req, res) => {
     try {
@@ -336,7 +321,6 @@ const deleteInteraction = (req, res) => {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not delete interaction.');
     }
 };
-// ***
 
 module.exports = {
     getAllInteractions,

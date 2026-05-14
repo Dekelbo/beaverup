@@ -1,9 +1,8 @@
-﻿const express = require('express');
+const express = require('express');
 const router = express.Router();
 const learningItemController = require('../controllers/learningItemController');
 const { isAdmin } = require('../middleware/auth');
 
-// ***
 // --- GET /learning-items (Admin only) ---
 router.get('/', isAdmin, learningItemController.getAllLearningItems);
 
@@ -21,6 +20,5 @@ router.put('/:id', learningItemController.updateLearningItem);
 
 // --- DELETE /learning-items/:id ---
 router.delete('/:id', learningItemController.deleteLearningItem);
-// ***
 
 module.exports = router;
