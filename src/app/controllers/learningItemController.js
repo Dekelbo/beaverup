@@ -101,7 +101,11 @@ const deleteLearningItem = (req, res) => {
         }
 
         learningItems.splice(index, 1);
-        res.status(200).json({ success: true, data: { itemId, message: 'Learning item deleted successfully.' }, error: null });
+        res.status(200).json({
+            success: true,
+            data: { itemId, message: 'Learning item deleted successfully.' },
+            error: null
+        });
     } catch (error) {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not delete learning item.');
     }
@@ -115,3 +119,4 @@ module.exports = {
     updateLearningItem,
     deleteLearningItem
 };
+

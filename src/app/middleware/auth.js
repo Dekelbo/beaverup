@@ -17,7 +17,7 @@ const isAdmin = (req, res, next) => {
     });
 };
 
-const isOwnerOrAdminByUserId = (getUserId) => {
+const isOwnerOrAdminByUserId = getUserId => {
     return (req, res, next) => {
         const role = req.headers['x-user-role'];
         const loggedInUserId = req.headers['x-user-id'];

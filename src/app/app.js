@@ -2,7 +2,7 @@
 const logger = require('./middleware/logger');
 
 // --- Import BeaverUP resource routes ---
-const userRoutes = require('./routes/userRoutes'); 
+const userRoutes = require('./routes/userRoutes');
 const learningItemRoutes = require('./routes/learningItemRoutes');
 const interactionRoutes = require('./routes/interactionRoutes');
 
@@ -29,16 +29,15 @@ app.use('/users', userRoutes);
 app.use('/learning-items', learningItemRoutes);
 app.use('/interactions', interactionRoutes);
 
-
 // --- Global 404 handler for unknown routes ---
 app.use((req, res) => {
-    res.status(404).json({ 
-        success: false, 
-        data: null, 
-        error: { 
-            code: "NOT_FOUND", 
-            message: "Route not found" 
-        } 
+    res.status(404).json({
+        success: false,
+        data: null,
+        error: {
+            code: 'NOT_FOUND',
+            message: 'Route not found'
+        }
     });
 });
 
@@ -71,4 +70,3 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`// --- App is listening on http://localhost:${PORT} ---`);
 });
-

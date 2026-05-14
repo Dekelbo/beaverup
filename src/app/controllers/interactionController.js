@@ -13,20 +13,37 @@ const sendError = (res, status, code, message, details = {}) => {
 const validateInteractionInput = (body, requireAllFields = true) => {
     const interactionType = getInteractionType(body.mode, body.interactionType);
 
-    if (requireAllFields && interactionType !== 'story_start' && (body.userInput === undefined || body.userInput === '' || body.userInput === null)) {
+    if (
+        requireAllFields &&
+        interactionType !== 'story_start' &&
+        (body.userInput === undefined || body.userInput === '' || body.userInput === null)
+    ) {
         return { message: 'Missing required interaction fields.', details: { missingFields: ['userInput'] } };
     }
 
-    if (body.mode === 'story' && body.interactionType && !['story_start', 'story_followup'].includes(body.interactionType)) {
-        return { message: 'Invalid story interaction type.', details: { mode: 'story', allowedValues: ['story_start', 'story_followup'] } };
+    if (
+        body.mode === 'story' &&
+        body.interactionType &&
+        !['story_start', 'story_followup'].includes(body.interactionType)
+    ) {
+        return {
+            message: 'Invalid story interaction type.',
+            details: { mode: 'story', allowedValues: ['story_start', 'story_followup'] }
+        };
     }
 
     if (body.mode === 'conversation' && body.interactionType && body.interactionType !== 'conversation_turn') {
-        return { message: 'Invalid conversation interaction type.', details: { mode: 'conversation', allowedValues: ['conversation_turn'] } };
+        return {
+            message: 'Invalid conversation interaction type.',
+            details: { mode: 'conversation', allowedValues: ['conversation_turn'] }
+        };
     }
 
     if (body.mode === 'translate' && body.interactionType && body.interactionType !== 'translate_request') {
-        return { message: 'Invalid translate interaction type.', details: { mode: 'translate', allowedValues: ['translate_request'] } };
+        return {
+            message: 'Invalid translate interaction type.',
+            details: { mode: 'translate', allowedValues: ['translate_request'] }
+        };
     }
 
     return null;
@@ -50,7 +67,16 @@ const getInteractionType = (mode, interactionType) => {
 };
 
 // --- Build a mock AI result ---
-const buildMockAiResult = ({ mode, interactionType, language, level, topic, userInput, wordGroup = [], previousTopic }) => {
+const buildMockAiResult = ({
+    mode,
+    interactionType,
+    language,
+    level,
+    topic,
+    userInput,
+    wordGroup = [],
+    previousTopic
+}) => {
     const learnerLevel = level || 'B1';
     const currentInteractionType = getInteractionType(mode, interactionType);
 
@@ -75,13 +101,18 @@ const buildMockAiResult = ({ mode, interactionType, language, level, topic, user
     }
 
     if (mode === 'story') {
-        const selectedWords = currentInteractionType === 'story_start'
-            ? wordGroup
-            : String(userInput || '').split(',').map(word => word.trim()).filter(Boolean);
+        const selectedWords =
+            currentInteractionType === 'story_start'
+                ? wordGroup
+                : String(userInput || '')
+                      .split(',')
+                      .map(word => word.trim())
+                      .filter(Boolean);
 
-        const storyTopic = currentInteractionType === 'story_followup'
-            ? `a new topic different from ${previousTopic || topic || 'the previous story'}`
-            : (topic || 'daily life');
+        const storyTopic =
+            currentInteractionType === 'story_followup'
+                ? `a new topic different from ${previousTopic || topic || 'the previous story'}`
+                : topic || 'daily life';
 
         return {
             nativeRewrite: null,
@@ -207,7 +238,24 @@ const updateInteraction = (req, res) => {
             return sendError(res, 404, 'INTERACTION_NOT_FOUND', 'Interaction not found.');
         }
 
-        const allowedFields = ['mode', 'interactionType', 'language', 'level', 'topic', 'previousTopic', 'previousInteractionId', 'wordGroup', 'userInput', 'nativeRewrite', 'higherLevelRewrite', 'storyText', 'wordTranslations', 'translation', 'learningItems', 'nextPrompt'];
+        const allowedFields = [
+            'mode',
+            'interactionType',
+            'language',
+            'level',
+            'topic',
+            'previousTopic',
+            'previousInteractionId',
+            'wordGroup',
+            'userInput',
+            'nativeRewrite',
+            'higherLevelRewrite',
+            'storyText',
+            'wordTranslations',
+            'translation',
+            'learningItems',
+            'nextPrompt'
+        ];
         allowedFields.forEach(field => {
             if (req.body[field] !== undefined) {
                 interaction[field] = req.body[field];
@@ -231,7 +279,11 @@ const deleteInteraction = (req, res) => {
         }
 
         interactions.splice(index, 1);
-        res.status(200).json({ success: true, data: { interactionId, message: 'Interaction deleted successfully.' }, error: null });
+        res.status(200).json({
+            success: true,
+            data: { interactionId, message: 'Interaction deleted successfully.' },
+            error: null
+        });
     } catch (error) {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not delete interaction.');
     }

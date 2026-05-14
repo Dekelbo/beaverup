@@ -71,7 +71,14 @@ const updateUser = (req, res) => {
             return sendError(res, 404, 'USER_NOT_FOUND', 'User not found.');
         }
 
-        const allowedFields = ['firstName', 'lastName', 'userRole', 'userNativeLanguage', 'languageToLearn', 'currentLevel'];
+        const allowedFields = [
+            'firstName',
+            'lastName',
+            'userRole',
+            'userNativeLanguage',
+            'languageToLearn',
+            'currentLevel'
+        ];
         allowedFields.forEach(field => {
             if (req.body[field] !== undefined) {
                 user[field] = req.body[field];
