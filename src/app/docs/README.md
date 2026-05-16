@@ -326,3 +326,270 @@ Content-Type: application/json
 ## Assumptions
 
 Data resets when the server restarts.
+
+## Concrete Response Examples
+
+### Users
+
+Successful `GET /users/1` response:
+
+```json
+{
+    "success": true,
+    "data": {
+        "userId": 1,
+        "firstName": "Ido",
+        "lastName": "Israeli",
+        "userRole": "admin",
+        "userNativeLanguage": "Hebrew",
+        "languageToLearn": "Spanish",
+        "currentLevel": "B2",
+        "createDate": "2026-05-06T12:00:00Z",
+        "updateDate": "2026-05-06T12:00:00Z"
+    },
+    "error": null
+}
+```
+
+Successful `POST /users` response:
+
+```json
+{
+    "success": true,
+    "data": {
+        "userId": 11,
+        "firstName": "Noa",
+        "lastName": "Levi",
+        "userRole": "user",
+        "userNativeLanguage": "Hebrew",
+        "languageToLearn": "Spanish",
+        "currentLevel": "A2",
+        "createDate": "2026-05-16T10:00:00.000Z",
+        "updateDate": "2026-05-16T10:00:00.000Z"
+    },
+    "error": null
+}
+```
+
+User validation error example:
+
+```json
+{
+    "success": false,
+    "data": null,
+    "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Invalid user id.",
+        "details": {
+            "field": "id"
+        }
+    }
+}
+```
+
+User not-found error example:
+
+```json
+{
+    "success": false,
+    "data": null,
+    "error": {
+        "code": "USER_NOT_FOUND",
+        "message": "User not found.",
+        "details": {}
+    }
+}
+```
+
+### Learning Items
+
+Successful `GET /learning-items/1` response:
+
+```json
+{
+    "success": true,
+    "data": {
+        "itemId": 1,
+        "userId": 1,
+        "language": "Spanish",
+        "type": "phrase",
+        "sourceText": "I'd like to get to...",
+        "meaning": "A polite way to say I want to go to...",
+        "context": "travel conversation"
+    },
+    "error": null
+}
+```
+
+Successful `POST /learning-items` response:
+
+```json
+{
+    "success": true,
+    "data": {
+        "itemId": 4,
+        "userId": 1,
+        "language": "Spanish",
+        "type": "phrase",
+        "sourceText": "I'd like to get to...",
+        "meaning": "A polite way to say I want to go to...",
+        "context": "travel conversation"
+    },
+    "error": null
+}
+```
+
+Learning item authorization error example:
+
+```json
+{
+    "success": false,
+    "data": null,
+    "error": {
+        "code": "FORBIDDEN",
+        "message": "You can only access your own data or must be an admin.",
+        "details": {
+            "requiredOwnerId": 1
+        }
+    }
+}
+```
+
+Learning item not-found error example:
+
+```json
+{
+    "success": false,
+    "data": null,
+    "error": {
+        "code": "LEARNING_ITEM_NOT_FOUND",
+        "message": "Learning item not found.",
+        "details": {}
+    }
+}
+```
+
+### Interactions
+
+Successful `POST /interactions` conversation response:
+
+```json
+{
+    "success": true,
+    "data": {
+        "interactionId": 5,
+        "userId": 1,
+        "mode": "conversation",
+        "interactionType": "conversation_turn",
+        "language": "Spanish",
+        "level": "B1",
+        "topic": "travel",
+        "previousTopic": null,
+        "previousInteractionId": null,
+        "wordGroup": [],
+        "userInput": "I want go to train station",
+        "nativeRewrite": "Natural B1-level rewrite: I want to go to the train station.",
+        "higherLevelRewrite": "Higher-level version for a B1 learner: I'd like to get to the train station.",
+        "storyText": null,
+        "wordTranslations": [],
+        "translation": null,
+        "learningItems": [
+            {
+                "type": "phrase",
+                "sourceText": "I'd like to get to...",
+                "meaning": "A polite phrase that helps a B1 learner sound more natural."
+            }
+        ],
+        "nextPrompt": "Answer at B1 level: How would you ask for a ticket?"
+    },
+    "error": null
+}
+```
+
+Successful `POST /interactions` story response:
+
+```json
+{
+    "success": true,
+    "data": {
+        "interactionId": 5,
+        "userId": 1,
+        "mode": "story",
+        "interactionType": "story_start",
+        "language": "Spanish",
+        "level": "A1",
+        "topic": "family",
+        "previousTopic": null,
+        "previousInteractionId": null,
+        "wordGroup": ["Hola", "casa", "madre"],
+        "userInput": null,
+        "nativeRewrite": null,
+        "higherLevelRewrite": null,
+        "storyText": "Mock A1 Spanish story about family that uses Hola, casa, madre.",
+        "wordTranslations": [
+            {
+                "sourceText": "Hola",
+                "translation": "Mock Spanish translation for Hola"
+            },
+            {
+                "sourceText": "casa",
+                "translation": "Mock Spanish translation for casa"
+            },
+            {
+                "sourceText": "madre",
+                "translation": "Mock Spanish translation for madre"
+            }
+        ],
+        "translation": null,
+        "learningItems": [
+            {
+                "type": "word",
+                "sourceText": "Hola",
+                "meaning": "Useful Spanish word for A1-level story practice."
+            },
+            {
+                "type": "word",
+                "sourceText": "casa",
+                "meaning": "Useful Spanish word for A1-level story practice."
+            },
+            {
+                "type": "word",
+                "sourceText": "madre",
+                "meaning": "Useful Spanish word for A1-level story practice."
+            }
+        ],
+        "nextPrompt": "Which words or phrases were difficult or interesting?"
+    },
+    "error": null
+}
+```
+
+Interaction validation error example:
+
+```json
+{
+    "success": false,
+    "data": null,
+    "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Missing required interaction fields.",
+        "details": {
+            "missingFields": ["userInput"]
+        }
+    }
+}
+```
+
+Interaction not-found error example:
+
+```json
+{
+    "success": false,
+    "data": null,
+    "error": {
+        "code": "INTERACTION_NOT_FOUND",
+        "message": "Interaction not found.",
+        "details": {}
+    }
+}
+```
