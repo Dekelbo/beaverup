@@ -20,6 +20,19 @@ Base URL:
 http://localhost:3000
 ```
 
+## How to Test
+
+1. Run `npm install`.
+2. Start the server with `npm start`.
+3. Open Postman.
+4. Import the provided Postman collection from the docs folder.
+5. Set the base URL to `http://localhost:3000`.
+6. Add mock authorization headers where required:
+    - `x-user-role: admin`
+    - `x-user-id: 1`
+7. Send the example requests in the collection.
+8. Check that responses use the standard success/error JSON format.
+
 ## Response Format
 
 All API responses use JSON.
