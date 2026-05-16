@@ -12,15 +12,15 @@ let users = [
         updateDate: "2026-05-06T12:00:00Z"
     },
     {
-        userId: 2,
-        firstName: "Sarah",
-        lastName: "Levi",
-        userRole: "user",
-        userNativeLanguage: "English",
-        languageToLearn: "French",
-        currentLevel: "A2",
-        createDate: "2026-05-06T12:05:00Z",
-        updateDate: "2026-05-06T12:05:00Z"
+      userId: 2,
+      firstName: "Dekel",
+      lastName: "Boneh",
+      userRole: "admin",
+      userNativeLanguage: "Hebrew",
+      languageToLearn: "German",
+      currentLevel: "A2",
+      createDate: "2026-05-06T12:05:00Z",
+      updateDate: "2026-05-06T12:05:00Z"
     },
     {
         userId: 3,
