@@ -1,6 +1,6 @@
 ﻿# BeaverUP Backend API
 
-BeaverUP is a language learning backend built with Node.js and Express. It uses mock in-memory data for Assignment 2. No real database and no real AI API are connected yet.
+BeaverUP is a language learning backend built with Node.js and Express. It uses mock data. No real database and no real AI API are connected yet.
 
 ## How to Install
 
@@ -28,9 +28,9 @@ Success response:
 
 ```json
 {
-  "success": true,
-  "data": {},
-  "error": null
+    "success": true,
+    "data": {},
+    "error": null
 }
 ```
 
@@ -38,13 +38,13 @@ Error response:
 
 ```json
 {
-  "success": false,
-  "data": null,
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Short readable message.",
-    "details": {}
-  }
+    "success": false,
+    "data": null,
+    "error": {
+        "code": "ERROR_CODE",
+        "message": "Short readable message.",
+        "details": {}
+    }
 }
 ```
 
@@ -60,7 +60,7 @@ x-user-id: 1
 Roles:
 
 ```text
-admin | manager | user
+admin | user
 ```
 
 ## Status Codes
@@ -82,15 +82,15 @@ User fields:
 
 ```json
 {
-  "userId": 1,
-  "firstName": "Ido",
-  "lastName": "Israeli",
-  "userRole": "admin",
-  "userNativeLanguage": "Hebrew",
-  "languageToLearn": "Spanish",
-  "currentLevel": "B2",
-  "createDate": "2026-05-06T12:00:00Z",
-  "updateDate": "2026-05-06T12:00:00Z"
+    "userId": 1,
+    "firstName": "Ido",
+    "lastName": "Israeli",
+    "userRole": "admin",
+    "userNativeLanguage": "Hebrew",
+    "languageToLearn": "Spanish",
+    "currentLevel": "B2",
+    "createDate": "2026-05-06T12:00:00Z",
+    "updateDate": "2026-05-06T12:00:00Z"
 }
 ```
 
@@ -135,13 +135,13 @@ Learning item fields:
 
 ```json
 {
-  "itemId": 1,
-  "userId": 1,
-  "language": "Spanish",
-  "type": "phrase",
-  "sourceText": "I'd like to get to...",
-  "meaning": "A polite way to say I want to go to...",
-  "context": "travel conversation"
+    "itemId": 1,
+    "userId": 1,
+    "language": "Spanish",
+    "type": "phrase",
+    "sourceText": "I'd like to get to...",
+    "meaning": "A polite way to say I want to go to...",
+    "context": "travel conversation"
 }
 ```
 
@@ -178,24 +178,24 @@ Interaction fields:
 
 ```json
 {
-  "interactionId": 1,
-  "userId": 1,
-  "mode": "conversation",
-  "interactionType": "conversation_turn",
-  "language": "Spanish",
-  "level": "B1",
-  "topic": "travel",
-  "previousTopic": null,
-  "previousInteractionId": null,
-  "wordGroup": [],
-  "userInput": "I want go to train station",
-  "nativeRewrite": "I want to go to the train station.",
-  "higherLevelRewrite": "I'd like to get to the train station.",
-  "storyText": null,
-  "wordTranslations": [],
-  "translation": null,
-  "learningItems": [],
-  "nextPrompt": "How would you ask for a ticket?"
+    "interactionId": 1,
+    "userId": 1,
+    "mode": "conversation",
+    "interactionType": "conversation_turn",
+    "language": "Spanish",
+    "level": "B1",
+    "topic": "travel",
+    "previousTopic": null,
+    "previousInteractionId": null,
+    "wordGroup": [],
+    "userInput": "I want go to train station",
+    "nativeRewrite": "I want to go to the train station.",
+    "higherLevelRewrite": "I'd like to get to the train station.",
+    "storyText": null,
+    "wordTranslations": [],
+    "translation": null,
+    "learningItems": [],
+    "nextPrompt": "How would you ask for a ticket?"
 }
 ```
 
@@ -263,13 +263,13 @@ Content-Type: application/json
 
 ```json
 {
-  "userId": 1,
-  "mode": "conversation",
-  "interactionType": "conversation_turn",
-  "language": "Spanish",
-  "level": "B1",
-  "topic": "travel",
-  "userInput": "I want go to train station"
+    "userId": 1,
+    "mode": "conversation",
+    "interactionType": "conversation_turn",
+    "language": "Spanish",
+    "level": "B1",
+    "topic": "travel",
+    "userInput": "I want go to train station"
 }
 ```
 
@@ -277,13 +277,13 @@ Create a story start interaction:
 
 ```json
 {
-  "userId": 1,
-  "mode": "story",
-  "interactionType": "story_start",
-  "language": "Spanish",
-  "level": "A1",
-  "topic": "family",
-  "wordGroup": ["Hola", "casa", "madre"]
+    "userId": 1,
+    "mode": "story",
+    "interactionType": "story_start",
+    "language": "Spanish",
+    "level": "A1",
+    "topic": "family",
+    "wordGroup": ["Hola", "casa", "madre"]
 }
 ```
 
@@ -291,15 +291,15 @@ Create a story follow-up interaction:
 
 ```json
 {
-  "userId": 1,
-  "mode": "story",
-  "interactionType": "story_followup",
-  "language": "Spanish",
-  "level": "A1",
-  "topic": "market",
-  "previousTopic": "family",
-  "previousInteractionId": 3,
-  "userInput": "madre, casa"
+    "userId": 1,
+    "mode": "story",
+    "interactionType": "story_followup",
+    "language": "Spanish",
+    "level": "A1",
+    "topic": "market",
+    "previousTopic": "family",
+    "previousInteractionId": 3,
+    "userInput": "madre, casa"
 }
 ```
 
@@ -314,18 +314,15 @@ Content-Type: application/json
 
 ```json
 {
-  "userId": 1,
-  "language": "Spanish",
-  "type": "phrase",
-  "sourceText": "I'd like to get to...",
-  "meaning": "A polite way to say I want to go to...",
-  "context": "travel conversation"
+    "userId": 1,
+    "language": "Spanish",
+    "type": "phrase",
+    "sourceText": "I'd like to get to...",
+    "meaning": "A polite way to say I want to go to...",
+    "context": "travel conversation"
 }
 ```
 
 ## Assumptions
 
-IDs are generated in memory by taking the highest current ID and adding 1. Data resets when the server restarts.
-
-
-
+Data resets when the server restarts.

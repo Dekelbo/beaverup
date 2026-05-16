@@ -1,0 +1,1877 @@
+{
+  "info": {
+    "_postman_id": "cc83cecc-d5a9-440a-a8a6-f4658b129964",
+    "name": "BeaverUp",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53386569",
+    "_collection_link": "https://go.postman.co/collection/53386569-cc83cecc-d5a9-440a-a8a6-f4658b129964?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "getUsers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "admin",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "{\r\n  \"success\": true,\r\n  \"data\": [\r\n    {\r\n      \"userId\": 1,\r\n      \"firstName\": \"Ido\",\r\n      \"lastName\": \"Israeli\",\r\n      \"userRole\": \"admin\",\r\n      \"userNativeLanguage\": \"Hebrew\",\r\n      \"languageToLearn\": \"Spanish\",\r\n      \"currentLevel\": \"B2\",\r\n      \"createDate\": \"2026-05-06T12:00:00Z\",\r\n      \"updateDate\": \"2026-05-06T12:00:00Z\"\r\n    },\r\n    {\r\n      \"userId\": 2,\r\n      \"firstName\": \"Dekel\",\r\n      \"lastName\": \"Boneh\",\r\n      \"userRole\": \"admin\",\r\n      \"userNativeLanguage\": \"Hebrew\",\r\n      \"languageToLearn\": \"German\",\r\n      \"currentLevel\": \"A2\",\r\n      \"createDate\": \"2026-05-06T12:05:00Z\",\r\n      \"updateDate\": \"2026-05-06T12:05:00Z\"\r\n    },\r\n    {\r\n      \"userId\": 3,\r\n      \"firstName\": \"David\",\r\n      \"lastName\": \"Cohen\",\r\n      \"userRole\": \"admin\",\r\n      \"userNativeLanguage\": \"Hebrew\",\r\n      \"languageToLearn\": \"Japanese\",\r\n      \"currentLevel\": \"C1\",\r\n      \"createDate\": \"2026-05-06T12:10:00Z\",\r\n      \"updateDate\": \"2026-05-06T12:15:00Z\"\r\n    },\r\n    {\r\n      \"userId\": 4,\r\n      \"firstName\": \"Elena\",\r\n      \"lastName\": \"Rodriguez\",\r\n      \"userRole\": \"user\",\r\n      \"userNativeLanguage\": \"Spanish\",\r\n      \"languageToLearn\": \"English\",\r\n      \"currentLevel\": \"B1\",\r\n      \"createDate\": \"2026-05-06T12:20:00Z\",\r\n      \"updateDate\": \"2026-05-06T12:20:00Z\"\r\n    },\r\n    {\r\n      \"userId\": 5,\r\n      \"firstName\": \"Yuki\",\r\n      \"lastName\": \"Tanaka\",\r\n      \"userRole\": \"user\",\r\n      \"userNativeLanguage\": \"Japanese\",\r\n      \"languageToLearn\": \"Italian\",\r\n      \"currentLevel\": \"A1\",\r\n      \"createDate\": \"2026-05-06T12:25:00Z\",\r\n      \"updateDate\": \"2026-05-06T12:25:00Z\"\r\n    },\r\n    {\r\n      \"userId\": 6,\r\n      \"firstName\": \"Marcus\",\r\n      \"lastName\": \"Schmidt\",\r\n      \"userRole\": \"user\",\r\n      \"userNativeLanguage\": \"German\",\r\n      \"languageToLearn\": \"Hebrew\",\r\n      \"currentLevel\": \"B2\",\r\n      \"createDate\": \"2026-05-06T12:30:00Z\",\r\n      \"updateDate\": \"2026-05-06T12:30:00Z\"\r\n    },\r\n    {\r\n      \"userId\": 7,\r\n      \"firstName\": \"Fatima\",\r\n      \"lastName\": \"Zahra\",\r\n      \"userRole\": \"user\",\r\n      \"userNativeLanguage\": \"Arabic\",\r\n      \"languageToLearn\": \"Spanish\",\r\n      \"currentLevel\": \"C2\",\r\n      \"createDate\": \"2026-05-06T12:35:00Z\",\r\n      \"updateDate\": \"2026-05-06T12:35:00Z\"\r\n    },\r\n    {\r\n      \"userId\": 8,\r\n      \"firstName\": \"Liam\",\r\n      \"lastName\": \"O'Connor\",\r\n      \"userRole\": \"user\",\r\n      \"userNativeLanguage\": \"English\",\r\n      \"languageToLearn\": \"Portuguese\",\r\n      \"currentLevel\": \"A2\",\r\n      \"createDate\": \"2026-05-06T12:40:00Z\",\r\n      \"updateDate\": \"2026-05-06T12:40:00Z\"\r\n    },\r\n    {\r\n      \"userId\": 9,\r\n      \"firstName\": \"Chloe\",\r\n      \"lastName\": \"Dubois\",\r\n      \"userRole\": \"user\",\r\n      \"userNativeLanguage\": \"French\",\r\n      \"languageToLearn\": \"German\",\r\n      \"currentLevel\": \"B1\",\r\n      \"createDate\": \"2026-05-06T12:45:00Z\",\r\n      \"updateDate\": \"2026-05-06T12:50:00Z\"\r\n    },\r\n    {\r\n      \"userId\": 10,\r\n      \"firstName\": \"Chen\",\r\n      \"lastName\": \"Wei\",\r\n      \"userRole\": \"user\",\r\n      \"userNativeLanguage\": \"Chinese\",\r\n      \"languageToLearn\": \"English\",\r\n      \"currentLevel\": \"B2\",\r\n      \"createDate\": \"2026-05-06T12:55:00Z\",\r\n      \"updateDate\": \"2026-05-06T12:55:00Z\"\r\n    }\r\n  ],\r\n  \"error\": null\r\n}"
+            },
+            {
+              "name": "forbidden",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "user",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/users?=",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ],
+                  "query": [
+                    {
+                      "key": "",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "",
+              "header": [],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "{\r\n  \"success\": false,\r\n  \"data\": null,\r\n  \"error\": {\r\n    \"code\": \"FORBIDDEN\",\r\n    \"message\": \"You do not have permission to perform this action.\",\r\n    \"details\": {\r\n      \"requiredRole\": \"admin\",\r\n      \"providedRole\": \"user\"\r\n    }\r\n  }\r\n}"
+            },
+            {
+              "name": "badReq",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "",
+              "header": [],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "{\r\n  \"success\": false,\r\n  \"data\": null,\r\n  \"error\": {\r\n    \"code\": \"VALIDATION_ERROR\",\r\n    \"message\": \"Missing required field: firstName\",\r\n    \"details\": {\r\n      \"field\": \"firstName\",\r\n      \"reason\": \"Field is mandatory for user creation\"\r\n    }\r\n  }\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "getUsersID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "user",
+                "type": "text"
+              },
+              {
+                "key": "x-user-id",
+                "value": "1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  },
+                  {
+                    "key": "x-user-id",
+                    "value": "1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/users/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"userId\": 1,\n        \"firstName\": \"Ido\",\n        \"lastName\": \"Israeli\",\n        \"userRole\": \"admin\",\n        \"userNativeLanguage\": \"Hebrew\",\n        \"languageToLearn\": \"Spanish\",\n        \"currentLevel\": \"B2\",\n        \"createDate\": \"2026-05-06T12:00:00Z\",\n        \"updateDate\": \"2026-05-06T12:00:00Z\"\n    },\n    \"error\": null\n}"
+            },
+            {
+              "name": "notFound",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/users/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "11"
+                    }
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n  \"success\": false,\r\n  \"data\": null,\r\n  \"error\": {\r\n    \"code\": \"USER_NOT_FOUND\",\r\n    \"message\": \"The requested user does not exist in the system.\",\r\n    \"details\": {\r\n      \"requestedId\": 999,\r\n      \"resource\": \"Users\"\r\n    }\r\n  }\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "postUser",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "user",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"Israel\",\r\n  \"lastName\": \"Israeli\",\r\n  \"userRole\": \"user\",\r\n  \"userNativeLanguage\": \"Hebrew\",\r\n  \"languageToLearn\": \"English\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "user",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/users",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"success\": true,\r\n  \"data\": {\r\n    \"userId\": 11,\r\n    \"message\": \"User created successfully\"\r\n  },\r\n  \"error\": null\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "putUser",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "admin",
+                "type": "text"
+              },
+              {
+                "key": "x-user-id",
+                "value": "1",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"Ido\",\r\n  \"lastName\": \"Israeli\",\r\n  \"userRole\": \"admin\",\r\n  \"currentLevel\": \"C1\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  },
+                  {
+                    "key": "x-user-id",
+                    "value": "1",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"firstName\": \"Ido\",\r\n  \"lastName\": \"Israeli\",\r\n  \"userRole\": \"admin\",\r\n  \"currentLevel\": \"C1\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n  \"success\": true,\r\n  \"data\": {\r\n    \"userId\": 1,\r\n    \"firstName\": \"Ido\",\r\n    \"lastName\": \"Israeli\",\r\n    \"userRole\": \"admin\",\r\n    \"userNativeLanguage\": \"Hebrew\",\r\n    \"languageToLearn\": \"Spanish\",\r\n    \"currentLevel\": \"C1\",\r\n    \"createDate\": \"2026-05-06T12:00:00Z\",\r\n    \"updateDate\": \"2026-05-06T13:15:00Z\"\r\n  },\r\n  \"error\": null\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "admin",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"Israel\",\r\n  \"lastName\": \"Israeli\",\r\n  \"userRole\": \"user\",\r\n  \"userNativeLanguage\": \"Hebrew\",\r\n  \"languageToLearn\": \"English\"\r\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "succees",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"firstName\": \"Israel\",\r\n  \"lastName\": \"Israeli\",\r\n  \"userRole\": \"user\",\r\n  \"userNativeLanguage\": \"Hebrew\",\r\n  \"languageToLearn\": \"English\"\r\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"userId\": 1,\n        \"message\": \"User deleted successfully\"\n    },\n    \"error\": null\n}"
+            },
+            {
+              "name": "forbidden",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"firstName\": \"Israel\",\r\n  \"lastName\": \"Israeli\",\r\n  \"userRole\": \"user\",\r\n  \"userNativeLanguage\": \"Hebrew\",\r\n  \"languageToLearn\": \"English\"\r\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/users/:id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "users",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"success\": false,\r\n  \"data\": null,\r\n  \"error\": {\r\n    \"code\": \"FORBIDDEN\",\r\n    \"message\": \"You do not have permission to perform this action.\",\r\n    \"details\": {\r\n      \"requiredRole\": \"admin\",\r\n      \"providedRole\": \"user\"\r\n    }\r\n  }\r\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Learning Items",
+      "item": [
+        {
+          "name": "getAllLearningItems",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "admin",
+                "type": "text"
+              },
+              {
+                "key": "",
+                "value": "",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/learning-items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "learning-items"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  },
+                  {
+                    "key": "",
+                    "value": "",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/learning-items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "learning-items"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "[\r\n    \"success\": true,\r\n    \"data\":[\r\n    {\r\n        itemId: 1,\r\n        userId: 1,\r\n        language: 'Spanish',\r\n        type: 'phrase',\r\n        sourceText: \"I'd like to get to...\",\r\n        meaning: 'A polite way to say I want to go to...',\r\n        context: 'travel conversation'\r\n    },\r\n    {\r\n        itemId: 2,\r\n        userId: 2,\r\n        language: 'French',\r\n        type: 'word',\r\n        sourceText: 'boulangerie',\r\n        meaning: 'bakery',\r\n        context: 'daily errands'\r\n    },\r\n    {\r\n        itemId: 3,\r\n        userId: 1,\r\n        language: 'Spanish',\r\n        type: 'rewrite',\r\n        sourceText: 'Could you tell me where the station is?',\r\n        meaning: 'A natural way to ask for directions.',\r\n        context: 'asking for directions'\r\n    }\r\n    ],\r\n    \"error\": null\r\n];"
+            },
+            {
+              "name": "badReuest",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  },
+                  {
+                    "key": "",
+                    "value": "",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/learning-items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "learning-items"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"data\": null,\n    \"error\": {\n        \"code\": \"VALIDATION_ERROR\",\n        \"message\": \"Missing required fields\",\n        \"details\": {\n            \"field\": \"firstName\",\n            \"reason\": \"Field is mandatory for user creation\"\n        }\n    }\n}"
+            },
+            {
+              "name": "forbidden",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "user",
+                    "type": "text"
+                  },
+                  {
+                    "key": "",
+                    "value": "",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/learning-items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "learning-items"
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"success\": false,\r\n  \"data\": null,\r\n  \"error\": {\r\n    \"code\": \"FORBIDDEN\",\r\n    \"message\": \"You do not have permission to perform this action.\",\r\n    \"details\": {\r\n      \"requiredRole\": \"admin\",\r\n      \"providedRole\": \"user\"\r\n    }\r\n  }\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "getLearningItemByID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "user",
+                "type": "text"
+              },
+              {
+                "key": "",
+                "value": "",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/learning-items/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "learning-items",
+                "1"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "user",
+                    "type": "text"
+                  },
+                  {
+                    "key": "",
+                    "value": "",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/learning-items/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "learning-items",
+                    "1"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n    \"success\": true,\r\n  \"data\":[\r\n    {\r\n        itemId: 1,\r\n        userId: 1,\r\n        language: 'Spanish',\r\n        type: 'phrase',\r\n        sourceText: \"I'd like to get to...\",\r\n        meaning: 'A polite way to say I want to go to...',\r\n        context: 'travel conversation'\r\n    }\r\n  ],\r\n  \"error\": null\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "getLearningItemsByUser",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "user",
+                "type": "text"
+              },
+              {
+                "key": "x-user-id",
+                "value": "1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/learning-items/user/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "learning-items",
+                "user",
+                "1"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "user",
+                    "type": "text"
+                  },
+                  {
+                    "key": "x-user-id",
+                    "value": "1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/learning-items/user/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "learning-items",
+                    "user",
+                    "1"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"success\": true,\r\n  \"data\": [],\r\n  \"error\": null\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "createLearningItem",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "user",
+                "type": "text"
+              },
+              {
+                "key": "",
+                "value": "",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": 1,\r\n  \"language\": \"Spanish\",\r\n  \"type\": \"phrase\",\r\n  \"sourceText\": \"I'd like to get to...\",\r\n  \"meaning\": \"A polite way to say I want to go to...\",\r\n  \"context\": \"travel conversation\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/learning-items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "learning-items"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "user",
+                    "type": "text"
+                  },
+                  {
+                    "key": "",
+                    "value": "",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"userId\": 1,\r\n  \"language\": \"Spanish\",\r\n  \"type\": \"phrase\",\r\n  \"sourceText\": \"I'd like to get to...\",\r\n  \"meaning\": \"A polite way to say I want to go to...\",\r\n  \"context\": \"travel conversation\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/learning-items",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "learning-items"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": [],\n    \"error\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "updateLearningItem",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "user",
+                "type": "text"
+              },
+              {
+                "key": "",
+                "value": "",
+                "type": "text",
+                "disabled": true
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"meaning\": \"A polite phrase for asking how to reach a place.\",\r\n  \"context\": \"directions\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/learning-items/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "learning-items",
+                "1"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "user",
+                    "type": "text"
+                  },
+                  {
+                    "key": "",
+                    "value": "",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"meaning\": \"A polite phrase for asking how to reach a place.\",\r\n  \"context\": \"directions\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/learning-items/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "learning-items",
+                    "1"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "{\n    \"success\": true,\n    \"data\": [],\n    \"error\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "deleteLearningItem",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "admin",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/learning-items/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "learning-items",
+                "1"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/learning-items/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "learning-items",
+                    "1"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": [],\n    \"error\": null\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Interactions",
+      "item": [
+        {
+          "name": "getAllInteractions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "admin",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/interactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "interactions"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/interactions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"success\": true,\r\n  \"data\": [\r\n    \r\n    {\r\n        interactionId: 1,\r\n        userId: 1,\r\n        mode: 'conversation',\r\n        interactionType: 'conversation_turn',\r\n        language: 'Spanish',\r\n        level: 'B1',\r\n        topic: 'travel',\r\n        previousTopic: null,\r\n        previousInteractionId: null,\r\n        wordGroup: [],\r\n        userInput: 'I want go to train station',\r\n        nativeRewrite: 'I want to go to the train station.',\r\n        higherLevelRewrite: \"I'd like to get to the train station.\",\r\n        storyText: null,\r\n        wordTranslations: [],\r\n        translation: null,\r\n        learningItems: [\r\n            {\r\n                type: 'phrase',\r\n                sourceText: \"I'd like to get to...\",\r\n                meaning: 'A polite way to say I want to go to...'\r\n            }\r\n        ],\r\n        nextPrompt: 'How would you ask for a ticket?'\r\n    },\r\n    {\r\n        interactionId: 2,\r\n        userId: 2,\r\n        mode: 'translate',\r\n        interactionType: 'translate_request',\r\n        language: 'French',\r\n        level: 'A2',\r\n        topic: 'food',\r\n        previousTopic: null,\r\n        previousInteractionId: null,\r\n        wordGroup: [],\r\n        userInput: 'Where is the bakery?',\r\n        nativeRewrite: null,\r\n        higherLevelRewrite: null,\r\n        storyText: null,\r\n        wordTranslations: [],\r\n        translation: {\r\n            French: 'Ou est la boulangerie?'\r\n        },\r\n        learningItems: [\r\n            {\r\n                type: 'word',\r\n                sourceText: 'boulangerie',\r\n                meaning: 'bakery'\r\n            }\r\n        ],\r\n        nextPrompt: null\r\n    },\r\n    {\r\n        interactionId: 3,\r\n        userId: 1,\r\n        mode: 'story',\r\n        interactionType: 'story_start',\r\n        language: 'Spanish',\r\n        level: 'A1',\r\n        topic: 'family',\r\n        previousTopic: null,\r\n        previousInteractionId: null,\r\n        wordGroup: ['Hola', 'casa', 'madre'],\r\n        userInput: null,\r\n        nativeRewrite: null,\r\n        higherLevelRewrite: null,\r\n        storyText: 'Mock A1 Spanish story about family that uses Hola, casa, madre.',\r\n        wordTranslations: [\r\n            { sourceText: 'Hola', translation: 'Mock Spanish translation for Hola' },\r\n            { sourceText: 'casa', translation: 'Mock Spanish translation for casa' },\r\n            { sourceText: 'madre', translation: 'Mock Spanish translation for madre' }\r\n        ],\r\n        translation: null,\r\n        learningItems: [\r\n            {\r\n                type: 'word',\r\n                sourceText: 'madre',\r\n                meaning: 'mother'\r\n            }\r\n        ],\r\n        nextPrompt: 'Which words or phrases were difficult or interesting?'\r\n    },\r\n    {\r\n        interactionId: 4,\r\n        userId: 1,\r\n        mode: 'story',\r\n        interactionType: 'story_followup',\r\n        language: 'Spanish',\r\n        level: 'A1',\r\n        topic: 'market',\r\n        previousTopic: 'family',\r\n        previousInteractionId: 3,\r\n        wordGroup: [],\r\n        userInput: 'madre, casa',\r\n        nativeRewrite: null,\r\n        higherLevelRewrite: null,\r\n        storyText: 'Mock A1 Spanish story about a new topic different from family that uses madre, casa.',\r\n        wordTranslations: [\r\n            { sourceText: 'madre', translation: 'Mock Spanish translation for madre' },\r\n            { sourceText: 'casa', translation: 'Mock Spanish translation for casa' }\r\n        ],\r\n        translation: null,\r\n        learningItems: [\r\n            {\r\n                type: 'word',\r\n                sourceText: 'casa',\r\n                meaning: 'house'\r\n            }\r\n        ],\r\n        nextPrompt: 'Which words or phrases were difficult or interesting?'\r\n    }\r\n  ],\r\n  \"error\": null\r\n}"
+            },
+            {
+              "name": "badRequest",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/interactions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"data\": null,\n    \"error\": {\n        \"code\": \"VALIDATION_ERROR\",\n        \"message\": \"Missing required fields\",\n        \"details\": {\n            \"field\": \"firstName\",\n            \"reason\": \"Field is mandatory for user creation\"\n        }\n    }\n}"
+            },
+            {
+              "name": "forbidden",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "user",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/interactions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions"
+                  ]
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"success\": false,\r\n  \"data\": null,\r\n  \"error\": {\r\n    \"code\": \"FORBIDDEN\",\r\n    \"message\": \"You do not have permission to perform this action.\",\r\n    \"details\": {\r\n      \"requiredRole\": \"admin\",\r\n      \"providedRole\": \"user\"\r\n    }\r\n  }\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "getInteractionByID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "admin",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/interactions/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "interactions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/interactions/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions",
+                    "1"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "{\r\n    \"success\": true,\r\n    \"data\": [\r\n        {\r\n    \"success\": true,\r\n    \"data\": [\r\n        {\r\n        interactionId: 1,\r\n        userId: 1,\r\n        mode: 'conversation',\r\n        interactionType: 'conversation_turn',\r\n        language: 'Spanish',\r\n        level: 'B1',\r\n        topic: 'travel',\r\n        previousTopic: null,\r\n        previousInteractionId: null,\r\n        wordGroup: [],\r\n        userInput: 'I want go to train station',\r\n        nativeRewrite: 'I want to go to the train station.',\r\n        higherLevelRewrite: \"I'd like to get to the train station.\",\r\n        storyText: null,\r\n        wordTranslations: [],\r\n        translation: null,\r\n        learningItems: [\r\n            {\r\n                type: 'phrase',\r\n                sourceText: \"I'd like to get to...\",\r\n                meaning: 'A polite way to say I want to go to...'\r\n            }\r\n        ],\r\n        nextPrompt: 'How would you ask for a ticket?'\r\n    }\r\n    ],\r\n    \"error\": null\r\n}\r\n    ],\r\n    \"error\": null\r\n}\r\n\r\n"
+            }
+          ]
+        },
+        {
+          "name": "getInteractionsByUser",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "admin",
+                "type": "text"
+              },
+              {
+                "key": "x-user-id",
+                "value": "1",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/interactions/user/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "interactions",
+                "user",
+                "1"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  },
+                  {
+                    "key": "x-user-id",
+                    "value": "1",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/interactions/user/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions",
+                    "user",
+                    "1"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "{\r\n    \"success\": true,\r\n    \"data\": [],\r\n    \"error\": null\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "createConversationInteraction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "user",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": 1,\r\n  \"mode\": \"conversation\",\r\n  \"interactionType\": \"conversation_turn\",\r\n  \"language\": \"Spanish\",\r\n  \"level\": \"B1\",\r\n  \"topic\": \"travel\",\r\n  \"userInput\": \"I want go to train station\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/interactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "interactions"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "user",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"userId\": 1,\r\n  \"mode\": \"conversation\",\r\n  \"interactionType\": \"conversation_turn\",\r\n  \"language\": \"Spanish\",\r\n  \"level\": \"B1\",\r\n  \"topic\": \"travel\",\r\n  \"userInput\": \"I want go to train station\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/interactions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"data\": [],\n    \"error\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "createStoryStartInteraction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "user",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": 1,\r\n  \"mode\": \"story\",\r\n  \"interactionType\": \"story_start\",\r\n  \"language\": \"Spanish\",\r\n  \"level\": \"A1\",\r\n  \"topic\": \"family\",\r\n  \"wordGroup\": [\"Hola\", \"casa\", \"madre\"]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/interactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "interactions"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "user",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"userId\": 1,\r\n  \"mode\": \"conversation\",\r\n  \"interactionType\": \"conversation_turn\",\r\n  \"language\": \"Spanish\",\r\n  \"level\": \"B1\",\r\n  \"topic\": \"travel\",\r\n  \"userInput\": \"I want go to train station\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/interactions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n    \"success\": true,\r\n    \"data\": [],\r\n    \"error\": null\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "createStoryFollow-UpInteraction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "user",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": 1,\r\n  \"mode\": \"story\",\r\n  \"interactionType\": \"story_followup\",\r\n  \"language\": \"Spanish\",\r\n  \"level\": \"A1\",\r\n  \"topic\": \"market\",\r\n  \"previousTopic\": \"family\",\r\n  \"previousInteractionId\": 3,\r\n  \"userInput\": \"madre, casa\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/interactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "interactions"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "user",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"userId\": 1,\r\n  \"mode\": \"story\",\r\n  \"interactionType\": \"story_followup\",\r\n  \"language\": \"Spanish\",\r\n  \"level\": \"A1\",\r\n  \"topic\": \"market\",\r\n  \"previousTopic\": \"family\",\r\n  \"previousInteractionId\": 3,\r\n  \"userInput\": \"madre, casa\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/interactions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n    \"success\": true,\r\n    \"data\": [],\r\n    \"error\": null\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "createTranslateInteraction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "user",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"userId\": 1,\r\n  \"mode\": \"translate\",\r\n  \"interactionType\": \"translate_request\",\r\n  \"language\": \"French\",\r\n  \"level\": \"A2\",\r\n  \"topic\": \"food\",\r\n  \"userInput\": \"Where is the bakery?\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/interactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "interactions"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "user",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"userId\": 1,\r\n  \"mode\": \"translate\",\r\n  \"interactionType\": \"translate_request\",\r\n  \"language\": \"French\",\r\n  \"level\": \"A2\",\r\n  \"topic\": \"food\",\r\n  \"userInput\": \"Where is the bakery?\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/interactions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n    \"success\": true,\r\n    \"data\": [],\r\n    \"error\": null\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "updateInteraction",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "user",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"topic\": \"train station\",\r\n  \"nextPrompt\": \"How would you ask where platform 2 is?\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/interactions/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "interactions",
+                "1"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "user",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"topic\": \"train station\",\r\n  \"nextPrompt\": \"How would you ask where platform 2 is?\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/interactions/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions",
+                    "1"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n    \"success\": true,\r\n    \"data\": [],\r\n    \"error\": null\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "deleteInteraction",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-user-role",
+                "value": "admin",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/interactions/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "interactions",
+                "1"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "x-user-role",
+                    "value": "admin",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/interactions/1",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "interactions",
+                    "1"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json",
+                  "description": "",
+                  "type": "text"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n    \"success\": true,\r\n    \"data\": [],\r\n    \"error\": null\r\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    }
+  ]
+}
