@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const { isAdmin, isOwnerOrAdmin } = require('../middleware/auth');
+const { isAdmin, isAdminOrManager,isAdminOrManagerOrOwner, isOwnerOrAdmin } = require('../middleware/auth');
 const { validateNumericParam, validateRequiredFields, validateEnum } = require('../middleware/validation');
 
 const userRequiredFields = [
@@ -20,8 +20,8 @@ const validateCurrentLevel = validateEnum(
 );
 const validateUserId = validateNumericParam('id', 'id', 'Invalid user id.');
 
-// --- GET /users (Admin only) ---
-router.get('/', isAdmin, userController.getAllUsers);
+// --- GET /users (Admin or manager only) ---
+router.get('/',isAdminOrManager, userController.getAllUsers);
 
 // --- GET /users/:id (Admin or Owner) ---
 router.get('/:id', validateUserId, isOwnerOrAdmin, userController.getUserById);
@@ -35,8 +35,8 @@ router.post(
     userController.createUser
 );
 
-// --- PUT /users/:id (Admin or Owner) ---
-router.put('/:id', validateUserId, isOwnerOrAdmin, validateUserRole, validateCurrentLevel, userController.updateUser);
+// --- PUT /users/:id (Admin or manager or Owner) ---
+router.put('/:id', validateUserId, isAdminOrManagerOrOwner, validateUserRole, validateCurrentLevel, userController.updateUser);
 
 // --- DELETE /users/:id (Admin only) ---
 router.delete('/:id', validateUserId, isAdmin, userController.deleteUser);
