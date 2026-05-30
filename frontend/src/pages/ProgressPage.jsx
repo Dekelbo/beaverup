@@ -7,6 +7,18 @@ function ProgressPage() {
         <p>Words, phrases, rewrites, and expressions from your practice sessions will appear here.</p>
       </div>
 
+      <div className="filter-bar">
+        <label>
+          Filter by language
+          <select defaultValue="all">
+            <option value="all">All languages</option>
+            <option value="Spanish">Spanish</option>
+            <option value="French">French</option>
+            <option value="German">German</option>
+          </select>
+        </label>
+      </div>
+
       <div className="table-card">
         <table>
           <thead>

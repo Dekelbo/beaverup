@@ -1,4 +1,8 @@
+import { useTheme } from '../context/ThemeContext';
+
 function SettingsPage() {
+  const { isDarkMode, toggleTheme } = useTheme();
+
   return (
     <section className="page">
       <div className="page-heading">
@@ -39,6 +43,20 @@ function SettingsPage() {
             <option>C2</option>
           </select>
         </label>
+        <div className="setting-toggle span-two">
+          <div>
+            <strong>Dark mode</strong>
+            <span>Use a quieter dark workshop theme across BeaverUP.</span>
+          </div>
+          <button
+            aria-pressed={isDarkMode}
+            className={`switch ${isDarkMode ? 'is-on' : ''}`}
+            onClick={toggleTheme}
+            type="button"
+          >
+            <span>{isDarkMode ? 'On' : 'Off'}</span>
+          </button>
+        </div>
         <button type="button">Save changes</button>
       </form>
     </section>

@@ -22,24 +22,10 @@ function DashboardPage() {
   return (
     <section className="page">
       <div className="page-heading">
+        <img className="dashboard-logo" src="/assets/main-logo.png" alt="BeaverUP" />
         <p className="eyebrow">Dashboard</p>
         <h1>Welcome back, Dekel.</h1>
         <p>Choose how you want to train today.</p>
-      </div>
-
-      <div className="stats-grid">
-        <article>
-          <strong>4</strong>
-          <span>Practice sessions</span>
-        </article>
-        <article>
-          <strong>3</strong>
-          <span>Saved progress items</span>
-        </article>
-        <article>
-          <strong>A2</strong>
-          <span>Current learning level</span>
-        </article>
       </div>
 
       <div className="mode-grid">
@@ -47,6 +33,21 @@ function DashboardPage() {
           <ModeCard key={mode.title} {...mode} />
         ))}
       </div>
+
+      <article className="learning-summary">
+        <div>
+          <span>Current language</span>
+          <strong>German</strong>
+        </div>
+        <div>
+          <span>Saved progress items</span>
+          <strong>3</strong>
+        </div>
+        <div>
+          <span>Current level</span>
+          <strong>A2</strong>
+        </div>
+      </article>
     </section>
   );
 }
