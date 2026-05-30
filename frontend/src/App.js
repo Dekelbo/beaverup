@@ -1,24 +1,30 @@
-import logo from './logo.svg';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
+import Layout from './components/Layout';
+import DashboardPage from './pages/DashboardPage';
+import HistoryPage from './pages/HistoryPage';
+import LoginPage from './pages/LoginPage';
+import ProgressPage from './pages/ProgressPage';
+import SettingsPage from './pages/SettingsPage';
+import SignupPage from './pages/SignupPage';
+import WorkspacePage from './pages/WorkspacePage';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route element={<Layout />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/workspace" element={<WorkspacePage />} />
+          <Route path="/progress" element={<ProgressPage />} />
+          <Route path="/history" element={<HistoryPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
