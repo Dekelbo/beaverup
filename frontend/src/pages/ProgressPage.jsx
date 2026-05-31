@@ -1,4 +1,32 @@
+import { useEffect, useMemo, useState } from 'react';
+import { getLearningItems } from '../services/api';
+
+// --- Render learning progress table ---
 function ProgressPage() {
+  const [items, setItems] = useState([]);
+  const [languageFilter, setLanguageFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // --- Load learning items ---
+  useEffect(() => {
+    async function loadItems() {
+      try {
+        const learningItems = await getLearningItems();
+        setItems(learningItems);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadItems();
+  }, []);
+
+  const languages = useMemo(() => [...new Set(items.map(item => item.language))], [items]);
+  const filteredItems = languageFilter === 'all' ? items : items.filter(item => item.language === languageFilter);
+
   return (
     <section className="page">
       <div className="page-heading">
@@ -10,14 +38,19 @@ function ProgressPage() {
       <div className="filter-bar">
         <label>
           Filter by language
-          <select defaultValue="all">
+          <select onChange={event => setLanguageFilter(event.target.value)} value={languageFilter}>
             <option value="all">All languages</option>
-            <option value="Spanish">Spanish</option>
-            <option value="French">French</option>
-            <option value="German">German</option>
+            {languages.map(language => (
+              <option key={language} value={language}>
+                {language}
+              </option>
+            ))}
           </select>
         </label>
       </div>
+
+      {loading && <p className="status-message">Loading progress...</p>}
+      {error && <p className="status-message error-message">{error}</p>}
 
       <div className="table-card">
         <table>
@@ -31,20 +64,20 @@ function ProgressPage() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Phrase</td>
-              <td>Spanish</td>
-              <td>I'd like to get to...</td>
-              <td>A polite way to say I want to go to...</td>
-              <td>Travel conversation</td>
-            </tr>
-            <tr>
-              <td>Word</td>
-              <td>French</td>
-              <td>boulangerie</td>
-              <td>Bakery</td>
-              <td>Daily errands</td>
-            </tr>
+            {filteredItems.map(item => (
+              <tr key={item.itemId}>
+                <td>{item.type}</td>
+                <td>{item.language}</td>
+                <td>{item.sourceText}</td>
+                <td>{item.meaning}</td>
+                <td>{item.context || 'General'}</td>
+              </tr>
+            ))}
+            {!loading && filteredItems.length === 0 && (
+              <tr>
+                <td colSpan="5">No progress items found.</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

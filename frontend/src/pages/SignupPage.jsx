@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 
+// --- Render signup form ---
 function SignupPage() {
   return (
     <main className="auth-page">

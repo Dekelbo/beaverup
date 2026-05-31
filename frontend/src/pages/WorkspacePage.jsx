@@ -1,3 +1,4 @@
+// --- Render practice workspace mockup ---
 function WorkspacePage() {
   return (
     <section className="workspace">

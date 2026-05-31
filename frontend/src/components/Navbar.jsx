@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 
+// --- Define main navigation links ---
 const links = [
   { to: '/dashboard', label: 'Dashboard' },
   { to: '/workspace', label: 'Practice' },
@@ -8,6 +9,7 @@ const links = [
   { to: '/settings', label: 'Settings' }
 ];
 
+// --- Render logged-in navigation ---
 function Navbar() {
   return (
     <header className="navbar">

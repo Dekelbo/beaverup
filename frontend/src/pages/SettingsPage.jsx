@@ -1,7 +1,64 @@
+import { useEffect, useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
+import { getCurrentUser, updateCurrentUser } from '../services/api';
 
+const emptyUser = {
+  firstName: '',
+  lastName: '',
+  userRole: 'user',
+  userNativeLanguage: '',
+  languageToLearn: '',
+  currentLevel: 'A1'
+};
+
+// --- Render profile and theme settings ---
 function SettingsPage() {
   const { isDarkMode, toggleTheme } = useTheme();
+  const [form, setForm] = useState(emptyUser);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+
+  // --- Load user settings ---
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const user = await getCurrentUser();
+        setForm(user);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadUser();
+  }, []);
+
+  // --- Update local form state ---
+  function handleChange(event) {
+    const { name, value } = event.target;
+    setForm(currentForm => ({ ...currentForm, [name]: value }));
+  }
+
+  // --- Save user settings ---
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setSaving(true);
+    setMessage('');
+    setError('');
+
+    try {
+      const updatedUser = await updateCurrentUser(form);
+      setForm(updatedUser);
+      setMessage('Settings saved.');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <section className="page">
@@ -11,36 +68,44 @@ function SettingsPage() {
         <p>Native language, target language, and CEFR level are editable here.</p>
       </div>
 
-      <form className="settings-form">
+      {loading && <p className="status-message">Loading settings...</p>}
+      {error && <p className="status-message error-message">{error}</p>}
+      {message && <p className="status-message success-message">{message}</p>}
+
+      <form className="settings-form" onSubmit={handleSubmit}>
         <label>
           First name
-          <input type="text" defaultValue="Dekel" />
+          <input name="firstName" onChange={handleChange} required type="text" value={form.firstName} />
         </label>
         <label>
           Last name
-          <input type="text" defaultValue="Boneh" />
+          <input name="lastName" onChange={handleChange} required type="text" value={form.lastName} />
         </label>
         <label>
-          Email
-          <input type="email" defaultValue="dekel@example.com" />
+          Role
+          <select name="userRole" onChange={handleChange} value={form.userRole}>
+            <option value="admin">Admin</option>
+            <option value="manager">Manager</option>
+            <option value="user">User</option>
+          </select>
         </label>
         <label>
           Native language
-          <input type="text" defaultValue="Hebrew" />
+          <input name="userNativeLanguage" onChange={handleChange} required type="text" value={form.userNativeLanguage} />
         </label>
         <label>
           Language to learn
-          <input type="text" defaultValue="German" />
+          <input name="languageToLearn" onChange={handleChange} required type="text" value={form.languageToLearn} />
         </label>
         <label>
           Current level
-          <select defaultValue="A2">
-            <option>A1</option>
-            <option>A2</option>
-            <option>B1</option>
-            <option>B2</option>
-            <option>C1</option>
-            <option>C2</option>
+          <select name="currentLevel" onChange={handleChange} value={form.currentLevel}>
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+            <option value="B1">B1</option>
+            <option value="B2">B2</option>
+            <option value="C1">C1</option>
+            <option value="C2">C2</option>
           </select>
         </label>
         <div className="setting-toggle span-two">
@@ -57,7 +122,9 @@ function SettingsPage() {
             <span>{isDarkMode ? 'On' : 'Off'}</span>
           </button>
         </div>
-        <button type="button">Save changes</button>
+        <button disabled={saving || loading} type="submit">
+          {saving ? 'Saving...' : 'Save changes'}
+        </button>
       </form>
     </section>
   );

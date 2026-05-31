@@ -473,6 +473,24 @@ th {
   padding: 24px;
 }
 
+.status-message {
+  background: var(--summary-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+}
+
+.error-message {
+  color: #a33a35;
+}
+
+.success-message {
+  color: var(--green-dark);
+}
+
 .setting-toggle {
   align-items: center;
   background: var(--summary-bg);

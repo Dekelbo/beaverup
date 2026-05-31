@@ -1,3 +1,4 @@
+// --- Render a reusable mode card ---
 function ModeCard({ title, description, action }) {
   return (
     <article className="mode-card">

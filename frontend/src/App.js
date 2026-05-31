@@ -10,6 +10,7 @@ import SignupPage from './pages/SignupPage';
 import WorkspacePage from './pages/WorkspacePage';
 import { ThemeProvider } from './context/ThemeContext';
 
+// --- Configure app routes and shared theme ---
 function App() {
   return (
     <ThemeProvider>

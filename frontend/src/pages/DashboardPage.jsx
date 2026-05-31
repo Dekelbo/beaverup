@@ -1,5 +1,6 @@
 import ModeCard from '../components/ModeCard';
 
+// --- Define available practice modes ---
 const modes = [
   {
     title: 'Conversation',
@@ -18,6 +19,7 @@ const modes = [
   }
 ];
 
+// --- Render mode selection dashboard ---
 function DashboardPage() {
   return (
     <section className="page">

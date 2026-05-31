@@ -1,3 +1,4 @@
+// --- Render shared footer ---
 function Footer() {
   return (
     <footer className="footer">
