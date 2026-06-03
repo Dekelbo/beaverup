@@ -83,6 +83,7 @@ const isAdminOrManagerOrOwner = getUserId => {
 const isOwnerOrAdmin = isOwnerOrAdminByUserId(req => req.params.userId || req.params.id || req.body.userId);
 const isOwnerOrAdminByUserParam = isOwnerOrAdminByUserId(req => req.params.userId);
 const isOwnerOrAdminByBodyUserId = isOwnerOrAdminByUserId(req => req.body.userId);
+const isAdminOrManagerOrOwnerByIdParam = isAdminOrManagerOrOwner(req => req.params.id);
 
 const isOwnerOrAdminForResource = (items, idField, ownerField, paramName = 'id') => {
     return (req, res, next) => {
@@ -101,6 +102,7 @@ module.exports = {
     isAdmin,
     isAdminOrManager,
     isAdminOrManagerOrOwner,
+    isAdminOrManagerOrOwnerByIdParam,
     isOwnerOrAdmin,
     isOwnerOrAdminByUserParam,
     isOwnerOrAdminByBodyUserId,

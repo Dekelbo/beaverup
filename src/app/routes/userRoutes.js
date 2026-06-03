@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const { isAdmin, isAdminOrManager,isAdminOrManagerOrOwner, isOwnerOrAdmin } = require('../middleware/auth');
+const { isAdmin, isAdminOrManager, isAdminOrManagerOrOwnerByIdParam, isOwnerOrAdmin } = require('../middleware/auth');
 const { validateNumericParam, validateRequiredFields, validateEnum } = require('../middleware/validation');
 
 const userRequiredFields = [
@@ -36,7 +36,7 @@ router.post(
 );
 
 // --- PUT /users/:id (Admin or manager or Owner) ---
-router.put('/:id', validateUserId, isAdminOrManagerOrOwner, validateUserRole, validateCurrentLevel, userController.updateUser);
+router.put('/:id', validateUserId, isAdminOrManagerOrOwnerByIdParam, validateUserRole, validateCurrentLevel, userController.updateUser);
 
 // --- DELETE /users/:id (Admin only) ---
 router.delete('/:id', validateUserId, isAdmin, userController.deleteUser);

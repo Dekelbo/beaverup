@@ -78,7 +78,8 @@ button:hover,
 }
 
 input,
-select {
+select,
+textarea {
   background: var(--input-bg);
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -87,6 +88,11 @@ select {
   min-height: 44px;
   padding: 10px 12px;
   width: 100%;
+}
+
+textarea {
+  min-height: 54px;
+  resize: vertical;
 }
 
 label {
@@ -376,6 +382,7 @@ p {
   display: grid;
   flex: 1;
   gap: 16px;
+  align-content: start;
   padding: 22px;
 }
 

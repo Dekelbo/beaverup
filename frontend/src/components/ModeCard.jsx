@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom';
+
 // --- Render a reusable mode card ---
-function ModeCard({ title, description, action }) {
+function ModeCard({ title, description, action, mode }) {
   return (
     <article className="mode-card">
       <div>
@@ -7,7 +9,9 @@ function ModeCard({ title, description, action }) {
         <h3>{title}</h3>
         <p>{description}</p>
       </div>
-      <button type="button">{action}</button>
+      <Link className="primary-button" to={`/workspace?mode=${mode}`}>
+        {action}
+      </Link>
     </article>
   );
 }

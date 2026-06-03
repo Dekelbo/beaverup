@@ -48,4 +48,23 @@ function getInteractions() {
   return apiRequest(`/interactions/user/${CURRENT_USER_ID}`);
 }
 
-export { API_BASE_URL, CURRENT_USER_ID, getCurrentUser, getInteractions, getLearningItems, updateCurrentUser };
+// --- Create a practice interaction ---
+function createInteraction(interaction) {
+  return apiRequest('/interactions', {
+    method: 'POST',
+    body: JSON.stringify({
+      userId: CURRENT_USER_ID,
+      ...interaction
+    })
+  });
+}
+
+export {
+  API_BASE_URL,
+  CURRENT_USER_ID,
+  createInteraction,
+  getCurrentUser,
+  getInteractions,
+  getLearningItems,
+  updateCurrentUser
+};

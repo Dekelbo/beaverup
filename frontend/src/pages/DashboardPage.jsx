@@ -4,16 +4,19 @@ import ModeCard from '../components/ModeCard';
 const modes = [
   {
     title: 'Conversation',
+    mode: 'conversation',
     description: 'Practice real answers, get a more natural version, then keep the conversation moving.',
     action: 'Start talking'
   },
   {
     title: 'Story',
+    mode: 'story',
     description: 'Read a short story at your level, choose interesting words, and meet them again in a new story.',
     action: 'Read a story'
   },
   {
     title: 'Translate',
+    mode: 'translate',
     description: 'Turn words or phrases into natural language across several languages at once.',
     action: 'Translate text'
   }
