@@ -8,7 +8,8 @@ const emptyUser = {
   userRole: 'user',
   userNativeLanguage: '',
   languageToLearn: '',
-  currentLevel: 'A1'
+  currentLevel: 'A1',
+  email: ''
 };
 
 // --- Render profile and theme settings ---
@@ -82,12 +83,8 @@ function SettingsPage() {
           <input name="lastName" onChange={handleChange} required type="text" value={form.lastName} />
         </label>
         <label>
-          Role
-          <select name="userRole" onChange={handleChange} value={form.userRole}>
-            <option value="admin">Admin</option>
-            <option value="manager">Manager</option>
-            <option value="user">User</option>
-          </select>
+          Email
+          <input name="email" onChange={handleChange} required type="email" value={form.email || ''} />
         </label>
         <label>
           Native language

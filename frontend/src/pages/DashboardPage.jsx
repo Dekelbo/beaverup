@@ -1,4 +1,5 @@
 import ModeCard from '../components/ModeCard';
+import { useAuth } from '../context/AuthContext';
 
 // --- Define available practice modes ---
 const modes = [
@@ -24,12 +25,14 @@ const modes = [
 
 // --- Render mode selection dashboard ---
 function DashboardPage() {
+  const { user } = useAuth();
+
   return (
     <section className="page">
       <div className="page-heading">
         <img className="dashboard-logo" src="/assets/main-logo.png" alt="BeaverUP" />
         <p className="eyebrow">Dashboard</p>
-        <h1>Welcome back, Dekel.</h1>
+        <h1>Welcome back, {user?.firstName || 'friend'}.</h1>
         <p>Choose how you want to train today.</p>
       </div>
 
@@ -42,7 +45,7 @@ function DashboardPage() {
       <article className="learning-summary">
         <div>
           <span>Current language</span>
-          <strong>German</strong>
+          <strong>{user?.languageToLearn || 'Not set'}</strong>
         </div>
         <div>
           <span>Saved progress items</span>
@@ -50,7 +53,7 @@ function DashboardPage() {
         </div>
         <div>
           <span>Current level</span>
-          <strong>A2</strong>
+          <strong>{user?.currentLevel || 'Not set'}</strong>
         </div>
       </article>
     </section>

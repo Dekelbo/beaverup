@@ -1,4 +1,5 @@
 const users = require('../models/users'); // --- Import mock data ---
+const { sanitizeUser } = require('./authController');
 
 // --- Send a standard error response ---
 const sendError = (res, status, code, message, details = {}) => {
@@ -12,7 +13,7 @@ const sendError = (res, status, code, message, details = {}) => {
 // --- Get all users ---
 const getAllUsers = (req, res) => {
     try {
-        res.status(200).json({ success: true, data: users, error: null });
+        res.status(200).json({ success: true, data: users.map(sanitizeUser), error: null });
     } catch (error) {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not get users.');
     }
@@ -28,7 +29,7 @@ const getUserById = (req, res) => {
             return sendError(res, 404, 'USER_NOT_FOUND', 'User not found.');
         }
 
-        res.status(200).json({ success: true, data: user, error: null });
+        res.status(200).json({ success: true, data: sanitizeUser(user), error: null });
     } catch (error) {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not get user.');
     }
@@ -37,7 +38,7 @@ const getUserById = (req, res) => {
 // --- Create a new user ---
 const createUser = (req, res) => {
     try {
-        const { firstName, lastName, userRole, userNativeLanguage, languageToLearn, currentLevel } = req.body;
+        const { firstName, lastName, userRole, userNativeLanguage, languageToLearn, currentLevel, email } = req.body;
         const newId = users.length > 0 ? Math.max(...users.map(u => u.userId)) + 1 : 1;
         const now = new Date().toISOString();
 
@@ -49,13 +50,15 @@ const createUser = (req, res) => {
             userNativeLanguage,
             languageToLearn,
             currentLevel,
+            email: email || null,
+            passwordHash: 'mock-password-123456',
             createDate: now,
             updateDate: now
         };
 
         users.push(newUser);
 
-        res.status(201).json({ success: true, data: newUser, error: null });
+        res.status(201).json({ success: true, data: sanitizeUser(newUser), error: null });
     } catch (error) {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not create user.');
     }
@@ -77,7 +80,8 @@ const updateUser = (req, res) => {
             'userRole',
             'userNativeLanguage',
             'languageToLearn',
-            'currentLevel'
+            'currentLevel',
+            'email'
         ];
         allowedFields.forEach(field => {
             if (req.body[field] !== undefined) {
@@ -86,7 +90,7 @@ const updateUser = (req, res) => {
         });
         user.updateDate = new Date().toISOString();
 
-        res.status(200).json({ success: true, data: user, error: null });
+        res.status(200).json({ success: true, data: sanitizeUser(user), error: null });
     } catch (error) {
         return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not update user.');
     }

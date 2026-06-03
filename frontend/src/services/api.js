@@ -1,17 +1,43 @@
 // --- Backend API base URL ---
 const API_BASE_URL = 'http://localhost:3000';
-const CURRENT_USER_ID = 2;
-const AUTH_HEADERS = {
-  'x-user-role': 'admin',
-  'x-user-id': String(CURRENT_USER_ID)
-};
+const AUTH_USER_KEY = 'beaverup-user';
+
+// --- Read stored mock auth user ---
+function getStoredUser() {
+  const savedUser = window.localStorage.getItem(AUTH_USER_KEY);
+  return savedUser ? JSON.parse(savedUser) : null;
+}
+
+// --- Save mock auth user ---
+function setStoredUser(user) {
+  window.localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+}
+
+// --- Clear mock auth user ---
+function clearStoredUser() {
+  window.localStorage.removeItem(AUTH_USER_KEY);
+}
+
+// --- Build mock auth headers ---
+function getAuthHeaders() {
+  const user = getStoredUser();
+
+  if (!user) {
+    return {};
+  }
+
+  return {
+    'x-user-role': user.userRole,
+    'x-user-id': String(user.userId)
+  };
+}
 
 // --- Send a backend request ---
 async function apiRequest(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers: {
-      ...AUTH_HEADERS,
+      ...getAuthHeaders(),
       'Content-Type': 'application/json',
       ...options.headers
     }
@@ -25,35 +51,68 @@ async function apiRequest(path, options = {}) {
   return result.data;
 }
 
+// --- Login mock user ---
+async function loginUser(credentials) {
+  const user = await apiRequest('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify(credentials)
+  });
+  setStoredUser(user);
+  return user;
+}
+
+// --- Signup mock user ---
+async function signupUser(signupData) {
+  const user = await apiRequest('/api/auth/signup', {
+    method: 'POST',
+    body: JSON.stringify(signupData)
+  });
+  setStoredUser(user);
+  return user;
+}
+
+// --- Logout mock user ---
+async function logoutUser() {
+  await apiRequest('/api/auth/logout', { method: 'POST' });
+  clearStoredUser();
+}
+
 // --- Get current mock user ---
 function getCurrentUser() {
-  return apiRequest(`/users/${CURRENT_USER_ID}`);
+  return apiRequest('/api/users/me');
 }
 
 // --- Update current mock user ---
 function updateCurrentUser(user) {
-  return apiRequest(`/users/${CURRENT_USER_ID}`, {
+  const currentUser = getStoredUser();
+  return apiRequest(`/users/${currentUser.userId}`, {
     method: 'PUT',
     body: JSON.stringify(user)
+  }).then(updatedUser => {
+    setStoredUser(updatedUser);
+    return updatedUser;
   });
 }
 
 // --- Get current user's learning items ---
 function getLearningItems() {
-  return apiRequest(`/learning-items/user/${CURRENT_USER_ID}`);
+  const currentUser = getStoredUser();
+  return apiRequest(`/learning-items/user/${currentUser.userId}`);
 }
 
 // --- Get current user's interactions ---
 function getInteractions() {
-  return apiRequest(`/interactions/user/${CURRENT_USER_ID}`);
+  const currentUser = getStoredUser();
+  return apiRequest(`/interactions/user/${currentUser.userId}`);
 }
 
 // --- Create a practice interaction ---
 function createInteraction(interaction) {
+  const currentUser = getStoredUser();
   return apiRequest('/interactions', {
     method: 'POST',
     body: JSON.stringify({
-      userId: CURRENT_USER_ID,
+      userId: currentUser.userId,
       ...interaction
     })
   });
@@ -61,10 +120,15 @@ function createInteraction(interaction) {
 
 export {
   API_BASE_URL,
-  CURRENT_USER_ID,
+  clearStoredUser,
   createInteraction,
   getCurrentUser,
   getInteractions,
   getLearningItems,
+  getStoredUser,
+  loginUser,
+  logoutUser,
+  setStoredUser,
+  signupUser,
   updateCurrentUser
 };

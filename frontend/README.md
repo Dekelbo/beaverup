@@ -36,6 +36,27 @@ Backend API base URL:
 http://localhost:3000
 ```
 
+## Mock Auth
+
+Login and signup are connected to the backend:
+
+```txt
+POST http://localhost:3000/api/auth/login
+POST http://localhost:3000/api/auth/signup
+POST http://localhost:3000/api/auth/logout
+GET  http://localhost:3000/api/users/me
+```
+
+The logged-in mock user is stored in browser `localStorage` and used for Settings, Progress, History, and Workspace requests.
+
+Passwords are mock values for Assignment 3. The backend stores:
+
+```txt
+passwordHash: "mock-password-123456"
+```
+
+Production auth should replace this with bcrypt or Argon2 password hashing.
+
 ## Test
 
 ```bash

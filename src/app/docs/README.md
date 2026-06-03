@@ -76,6 +76,25 @@ Roles:
 admin | user
 ```
 
+## Mock Auth
+
+Assignment 3 auth endpoints:
+
+```text
+POST /api/auth/login
+POST /api/auth/signup
+POST /api/auth/logout
+GET /api/users/me
+```
+
+Passwords are mock values for Assignment 3. Users store:
+
+```text
+passwordHash: "mock-password-123456"
+```
+
+Production auth should replace this with bcrypt or Argon2 password hashing.
+
 ## Status Codes
 
 ```text

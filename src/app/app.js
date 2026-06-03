@@ -2,6 +2,8 @@
 const logger = require('./middleware/logger');
 
 // --- Import BeaverUP resource routes ---
+const authController = require('./controllers/authController');
+const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const learningItemRoutes = require('./routes/learningItemRoutes');
 const interactionRoutes = require('./routes/interactionRoutes');
@@ -38,6 +40,8 @@ app.get('/', (req, res) => {
 });
 
 // Register route groups under their base API endpoints paths
+app.use('/api/auth', authRoutes);
+app.get('/api/users/me', authController.getMe);
 app.use('/users', userRoutes);
 app.use('/learning-items', learningItemRoutes);
 app.use('/interactions', interactionRoutes);
