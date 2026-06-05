@@ -29,8 +29,25 @@ function SignupPage() {
   // --- Submit signup request ---
   async function handleSubmit(event) {
     event.preventDefault();
-    setLoading(true);
     setError('');
+
+    const missingField = Object.values(form).some(value => !String(value).trim());
+    if (missingField) {
+      setError('Fill in all signup fields.');
+      return;
+    }
+
+    if (!form.email.includes('@')) {
+      setError('Enter a valid email address.');
+      return;
+    }
+
+    if (form.password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+
+    setLoading(true);
 
     try {
       await signup(form);

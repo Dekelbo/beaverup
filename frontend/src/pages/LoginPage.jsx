@@ -19,8 +19,19 @@ function LoginPage() {
   // --- Submit login request ---
   async function handleSubmit(event) {
     event.preventDefault();
-    setLoading(true);
     setError('');
+
+    if (!form.email.trim() || !form.email.includes('@')) {
+      setError('Enter a valid email address.');
+      return;
+    }
+
+    if (form.password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+
+    setLoading(true);
 
     try {
       await login(form);

@@ -145,6 +145,11 @@ function WorkspacePage() {
     event.preventDefault();
     setError('');
 
+    if (!settings.language.trim()) {
+      setError(settings.mode === 'translate' ? 'Target language is required.' : 'Language is required.');
+      return;
+    }
+
     if (settings.mode !== 'story' && !userInput.trim()) {
       setError('Write something first.');
       return;

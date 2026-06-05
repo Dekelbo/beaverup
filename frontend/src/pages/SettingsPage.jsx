@@ -46,9 +46,25 @@ function SettingsPage() {
   // --- Save user settings ---
   async function handleSubmit(event) {
     event.preventDefault();
-    setSaving(true);
     setMessage('');
     setError('');
+
+    if (!form.firstName.trim() || !form.lastName.trim() || !form.email.trim()) {
+      setError('First name, last name, and email are required.');
+      return;
+    }
+
+    if (!form.email.includes('@')) {
+      setError('Enter a valid email address.');
+      return;
+    }
+
+    if (!form.userNativeLanguage.trim() || !form.languageToLearn.trim()) {
+      setError('Native language and language to learn are required.');
+      return;
+    }
+
+    setSaving(true);
 
     try {
       const updatedUser = await updateCurrentUser(form);

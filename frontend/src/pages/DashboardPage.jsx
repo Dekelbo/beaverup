@@ -27,7 +27,7 @@ const modes = [
 
 // --- Render mode selection dashboard ---
 function DashboardPage() {
-  const { user } = useAuth();
+  const { authSource, user } = useAuth();
   const [progressCount, setProgressCount] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(true);
   const [progressError, setProgressError] = useState('');
@@ -53,7 +53,7 @@ function DashboardPage() {
       <div className="page-heading">
         <img className="dashboard-logo" src="/assets/main-logo.png" alt="BeaverUP" />
         <p className="eyebrow">Dashboard</p>
-        <h1>Welcome back, {user?.firstName || 'friend'}.</h1>
+        <h1>{authSource === 'signup' ? 'Welcome' : 'Welcome back'}, {user?.firstName || 'friend'}.</h1>
         <p>Choose how you want to train today.</p>
       </div>
 

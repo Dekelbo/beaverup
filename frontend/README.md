@@ -1,6 +1,6 @@
 # BeaverUP Frontend
 
-React frontend for the BeaverUP language training project.
+React frontend for BeaverUP, a structured language performance trainer for spoken fluency.
 
 ## Install
 
@@ -8,19 +8,25 @@ React frontend for the BeaverUP language training project.
 npm install
 ```
 
-## Run
+## Run Backend
 
 Start the backend first from the project root:
 
 ```bash
-cd C:\Users\dekel\Desktop\beaverup
 npm start
 ```
 
-Then start the frontend:
+Backend API base URL:
+
+```txt
+http://localhost:3000
+```
+
+## Run Frontend
+
+Start the frontend from the `frontend` folder:
 
 ```bash
-cd C:\Users\dekel\Desktop\beaverup\frontend
 npm start
 ```
 
@@ -30,24 +36,34 @@ Frontend URL:
 http://localhost:5173
 ```
 
-Backend API base URL:
+## Pages
 
 ```txt
-http://localhost:3000
+/login
+/signup
+/dashboard
+/workspace
+/progress
+/history
+/settings
+```
+
+## Backend Endpoints Used
+
+```txt
+POST /api/auth/login
+POST /api/auth/signup
+POST /api/auth/logout
+GET  /api/users/me
+PUT  /users/:id
+GET  /learning-items/user/:userId
+GET  /interactions/user/:userId
+POST /interactions
 ```
 
 ## Mock Auth
 
-Login and signup are connected to the backend:
-
-```txt
-POST http://localhost:3000/api/auth/login
-POST http://localhost:3000/api/auth/signup
-POST http://localhost:3000/api/auth/logout
-GET  http://localhost:3000/api/users/me
-```
-
-The logged-in mock user is stored in browser `localStorage` and used for Settings, Progress, History, and Workspace requests.
+Login and signup are connected to the backend. The logged-in mock user is stored in browser `localStorage` and used for Settings, Progress, History, Dashboard, and Workspace requests.
 
 Passwords are mock values for Assignment 3. The backend stores:
 
@@ -57,14 +73,16 @@ passwordHash: "mock-password-123456"
 
 Production auth should replace this with bcrypt or Argon2 password hashing.
 
-## Test
+## Mock Data Limits
 
-```bash
-npm test -- --watchAll=false --runInBand
-```
+The backend currently uses in-memory mock arrays. Data can survive a browser refresh, but it resets when the backend server restarts.
+
+The AI response is currently mocked by the backend. AI API integration and live dashboard updates with sockets are planned for production.
 
 ## Build
 
 ```bash
 npm run build
 ```
+
+
