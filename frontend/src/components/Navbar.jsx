@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 // --- Define main navigation links ---
@@ -13,6 +13,13 @@ const links = [
 // --- Render logged-in navigation ---
 function Navbar() {
   const { logout, user } = useAuth();
+  const navigate = useNavigate();
+
+  // --- Logout and return to login ---
+  async function handleLogout() {
+    await logout();
+    navigate('/login');
+  }
 
   return (
     <header className="navbar">
@@ -33,9 +40,9 @@ function Navbar() {
 
       <div className="nav-user">
         <span>{user?.firstName || 'User'}</span>
-        <NavLink className="logout-link" onClick={logout} to="/login">
+        <button className="logout-link" onClick={handleLogout} type="button">
           Logout
-        </NavLink>
+        </button>
       </div>
     </header>
   );

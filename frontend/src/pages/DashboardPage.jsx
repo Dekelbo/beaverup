@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import ModeCard from '../components/ModeCard';
 import { useAuth } from '../context/AuthContext';
+import { getLearningItems } from '../services/api';
 
 // --- Define available practice modes ---
 const modes = [
@@ -26,6 +28,25 @@ const modes = [
 // --- Render mode selection dashboard ---
 function DashboardPage() {
   const { user } = useAuth();
+  const [progressCount, setProgressCount] = useState(0);
+  const [loadingProgress, setLoadingProgress] = useState(true);
+  const [progressError, setProgressError] = useState('');
+
+  // --- Load progress summary ---
+  useEffect(() => {
+    async function loadProgressCount() {
+      try {
+        const learningItems = await getLearningItems();
+        setProgressCount(learningItems.length);
+      } catch (err) {
+        setProgressError(err.message);
+      } finally {
+        setLoadingProgress(false);
+      }
+    }
+
+    loadProgressCount();
+  }, []);
 
   return (
     <section className="page">
@@ -49,13 +70,14 @@ function DashboardPage() {
         </div>
         <div>
           <span>Saved progress items</span>
-          <strong>3</strong>
+          <strong>{loadingProgress ? '...' : progressCount}</strong>
         </div>
         <div>
           <span>Current level</span>
           <strong>{user?.currentLevel || 'Not set'}</strong>
         </div>
       </article>
+      {progressError && <p className="status-message error-message">{progressError}</p>}
     </section>
   );
 }

@@ -161,9 +161,11 @@ label {
 
 .nav-links a,
 .logout-link {
+  background: transparent;
   border-radius: 8px;
   color: var(--muted);
   font-weight: 700;
+  min-height: auto;
   padding: 9px 12px;
 }
 
@@ -172,6 +174,7 @@ label {
 .logout-link:hover {
   background: var(--panel-strong);
   color: var(--green-dark);
+  transform: none;
 }
 
 .nav-user {
