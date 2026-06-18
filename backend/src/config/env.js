@@ -16,7 +16,8 @@ const env = {
     ai: {
         provider: process.env.AI_PROVIDER || 'openai',
         apiKey: process.env.AI_API_KEY || '',
-        model: process.env.AI_MODEL || 'gpt-4o-mini'
+        model: process.env.AI_MODEL || 'gpt-4o-mini',
+        maxOutputTokens: Number(process.env.AI_MAX_OUTPUT_TOKENS || 500)
     }
 };
 

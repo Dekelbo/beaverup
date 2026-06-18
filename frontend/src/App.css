@@ -353,6 +353,86 @@ p {
   grid-template-columns: minmax(0, 1fr) 320px;
 }
 
+.hub-layout {
+  align-items: start;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: 300px minmax(0, 1fr);
+}
+
+.hub-sidebar {
+  align-content: start;
+}
+
+.hub-actions {
+  display: grid;
+}
+
+.hub-status {
+  background: var(--summary-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+}
+
+.hub-status span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.hub-status strong {
+  color: var(--green-dark);
+}
+
+.hub-users {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hub-users span {
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--green-dark);
+  font-size: 0.86rem;
+  font-weight: 800;
+  padding: 7px 10px;
+}
+
+.hub-users p {
+  margin-bottom: 0;
+}
+
+.hub-panel {
+  min-height: 680px;
+}
+
+.hub-thread {
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.hub-system-message {
+  background: var(--summary-bg);
+  border: 1px solid var(--border);
+  justify-self: center;
+  max-width: 86%;
+  text-align: center;
+}
+
+.message small {
+  color: var(--muted);
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
 .chat-panel {
   display: flex;
   flex-direction: column;
@@ -434,14 +514,38 @@ p {
 
 .filter-bar {
   align-items: end;
-  display: flex;
-  justify-content: flex-end;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) 260px;
   margin-bottom: 16px;
 }
 
 .filter-bar label {
-  max-width: 260px;
   width: 100%;
+}
+
+.inline-form {
+  align-items: end;
+  background: var(--summary-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(5, minmax(120px, 1fr)) auto;
+  padding: 14px;
+}
+
+.inline-actions,
+.table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.inline-actions button,
+.table-actions button,
+.history-card-header button {
+  min-height: 36px;
+  padding: 0 12px;
 }
 
 table {
@@ -472,6 +576,13 @@ th {
   display: grid;
   gap: 14px;
   padding: 20px;
+}
+
+.history-card-header {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
 }
 
 .history-meta {
@@ -598,9 +709,19 @@ th {
 
   .mode-grid,
   .workspace,
+  .hub-layout,
+  .filter-bar,
+  .inline-form,
   .form-grid,
   .settings-form {
     grid-template-columns: 1fr;
+  }
+
+  .history-card-header,
+  .inline-actions,
+  .table-actions {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .learning-summary {

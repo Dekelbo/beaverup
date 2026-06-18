@@ -3,6 +3,7 @@ import './App.css';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardPage from './pages/DashboardPage';
+import BeaverHubPage from './pages/BeaverHubPage';
 import HistoryPage from './pages/HistoryPage';
 import LoginPage from './pages/LoginPage';
 import ProgressPage from './pages/ProgressPage';
@@ -25,6 +26,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route element={<Layout />}>
                 <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/beaver-hub" element={<BeaverHubPage />} />
                 <Route path="/workspace" element={<WorkspacePage />} />
                 <Route path="/progress" element={<ProgressPage />} />
                 <Route path="/history" element={<HistoryPage />} />

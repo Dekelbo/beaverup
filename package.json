@@ -2,9 +2,12 @@
   "name": "beaverup",
   "version": "1.0.0",
   "description": "BeaverUP backend API for language learning practice.",
-  "main": "src/app/app.js",
+  "main": "backend/src/app.js",
   "scripts": {
-    "start": "node src/app/app.js",
+    "start": "node backend/src/app.js",
+    "start:legacy": "node src/app/app.js",
+    "db:test": "node backend/src/scripts/testDatabase.js",
+    "db:sync": "node backend/src/scripts/syncDatabase.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,6 +28,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "mysql2": "^3.22.5",
+    "openai": "^6.43.0",
     "sequelize": "^6.37.8",
     "socket.io": "^4.8.3"
   }

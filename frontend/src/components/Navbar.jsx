@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 const links = [
   { to: '/dashboard', label: 'Dashboard' },
   { to: '/workspace', label: 'Practice' },
+  { to: '/beaver-hub', label: 'Beaver Hub' },
   { to: '/progress', label: 'Progress' },
   { to: '/history', label: 'History' },
   { to: '/settings', label: 'Settings' }

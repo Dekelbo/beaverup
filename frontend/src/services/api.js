@@ -100,6 +100,33 @@ function getLearningItems() {
   return apiRequest(`/learning-items/user/${currentUser.userId}`);
 }
 
+// --- Create a learning item ---
+function createLearningItem(item) {
+  const currentUser = getStoredUser();
+  return apiRequest('/learning-items', {
+    method: 'POST',
+    body: JSON.stringify({
+      userId: currentUser.userId,
+      ...item
+    })
+  });
+}
+
+// --- Update a learning item ---
+function updateLearningItem(itemId, item) {
+  return apiRequest(`/learning-items/${itemId}`, {
+    method: 'PUT',
+    body: JSON.stringify(item)
+  });
+}
+
+// --- Delete a learning item ---
+function deleteLearningItem(itemId) {
+  return apiRequest(`/learning-items/${itemId}`, {
+    method: 'DELETE'
+  });
+}
+
 // --- Get current user's interactions ---
 function getInteractions() {
   const currentUser = getStoredUser();
@@ -118,10 +145,20 @@ function createInteraction(interaction) {
   });
 }
 
+// --- Delete a practice interaction ---
+function deleteInteraction(interactionId) {
+  return apiRequest(`/interactions/${interactionId}`, {
+    method: 'DELETE'
+  });
+}
+
 export {
   API_BASE_URL,
   clearStoredUser,
   createInteraction,
+  createLearningItem,
+  deleteInteraction,
+  deleteLearningItem,
   getCurrentUser,
   getInteractions,
   getLearningItems,
@@ -130,5 +167,6 @@ export {
   logoutUser,
   setStoredUser,
   signupUser,
+  updateLearningItem,
   updateCurrentUser
 };
