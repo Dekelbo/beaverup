@@ -22,6 +22,14 @@ Users can practice in Conversation, Story, and Translate modes, save learning it
 beaverup/
   backend/
     src/
+      app.js
+      config/
+      controllers/
+      middleware/
+      routes/
+      services/
+      scripts/
+      utils/
     models/
     migrations/
     package.json
@@ -29,7 +37,13 @@ beaverup/
   frontend/
     public/
     src/
+      components/
+      pages/
+      services/
+      App.js
     package.json
+  postman/
+    BeaverUp.postman_collection.json
 ```
 
 ## Installation
@@ -82,6 +96,8 @@ Sync ORM tables:
 ```bash
 npm run db:sync
 ```
+
+The migration files are also available in `backend/migrations` if the database needs to be created manually from SQL files.
 
 ## Environment Variables
 
@@ -153,6 +169,37 @@ Relationships:
 
 The many-to-many relationship uses `interaction_learning_items`.
 
+## ORM Setup
+
+Sequelize connects to MySQL using the values from `backend/.env`.
+
+The model files are stored in:
+
+```text
+backend/models
+```
+
+The Sequelize connection and model registration are handled by:
+
+```text
+backend/src/config/database.js
+backend/models/index.js
+```
+
+To create or update the tables from the ORM models, run:
+
+```bash
+cd backend
+npm run db:sync
+```
+
+To check only the database connection, run:
+
+```bash
+cd backend
+npm run db:test
+```
+
 ## Migrations
 
 SQL schema files are in:
@@ -198,6 +245,25 @@ Error:
 ```
 
 ## Main API Endpoints
+
+Base backend URL:
+
+```text
+http://localhost:3000
+```
+
+Most protected routes use simple assignment-friendly headers:
+
+```text
+x-user-id: 1
+x-user-role: user
+```
+
+Admin-only routes should use:
+
+```text
+x-user-role: admin
+```
 
 Auth:
 
@@ -277,8 +343,6 @@ Supported modes:
 - Story: first click generates a story up to 100 words; later input creates follow-up stories using difficult words.
 - Translate: returns direct natural translations.
 
-OpenAI keys are stored only in `backend/.env`.
-
 ## WebSocket Feature
 
 Beaver Hub provides live language rooms using Socket.IO.
@@ -303,29 +367,34 @@ Demo flow:
 
 Messages are live only and are not stored in MySQL.
 
+## Postman Collection
+
+The Postman collection is stored in:
+
+```text
+postman/BeaverUp.postman_collection.json
+```
+
+Use this variable in Postman:
+
+```text
+baseUrl = http://localhost:3000
+```
+
+For protected requests, add:
+
+```text
+x-user-id: 1
+x-user-role: user
+```
+
+Use `x-user-role: admin` for admin-only requests.
+
 ## Known Limitations
 
 - Authentication uses localStorage and mock headers (`x-user-id`, `x-user-role`), not JWT or sessions.
-- Chat room messages are not persistent.
+- Passwords are hashed, but authentication is intentionally simple for the assignment.
+- Chat room messages are live only and are not saved in MySQL.
 - OpenAI usage depends on the API key quota and billing setup.
-- The root package files are kept for compatibility, but the clean backend workflow is under `backend/`.
 
-## Submission Notes
 
-Do not include:
-
-- `node_modules`
-- `backend/.env`
-- real API keys
-- real passwords
-- generated build folders
-
-Include:
-
-- source code
-- `backend/.env.example`
-- migrations
-- README
-- Postman collection
-- required screenshots
-- demo video
