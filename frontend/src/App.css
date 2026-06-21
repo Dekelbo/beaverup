@@ -504,6 +504,45 @@ p {
   padding: 18px;
 }
 
+.start-input {
+  border-top: 1px solid var(--border);
+  display: grid;
+  padding: 24px;
+}
+
+.start-input button {
+  font-size: 1.2rem;
+  min-height: 62px;
+}
+
+.start-empty-state {
+  align-self: center;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  justify-self: center;
+  max-width: 420px;
+  padding: 18px;
+  text-align: center;
+}
+
+.start-empty-state p {
+  margin-bottom: 0;
+}
+
+.thinking-message {
+  display: grid;
+  gap: 12px;
+}
+
+.thinking-message video {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: block;
+  max-height: 190px;
+  object-fit: cover;
+  width: min(320px, 100%);
+}
+
 .side-card {
   padding: 20px;
 }

@@ -14,6 +14,14 @@ const startMessages = {
   translate: 'Choose the target language and write the text you want translated.'
 };
 
+function getInitialMessages(mode) {
+  if (mode === 'translate') {
+    return [{ role: 'beaver', parts: [startMessages.translate] }];
+  }
+
+  return [];
+}
+
 // --- Build a BeaverUP chat response ---
 function buildBeaverMessage(interaction) {
   const parts = [];
@@ -49,31 +57,41 @@ function buildBeaverMessage(interaction) {
   return parts.length > 0 ? parts : ['Practice response saved.'];
 }
 
+function ThinkingMessage() {
+  return (
+    <div className="message beaver-message thinking-message">
+      <span>BeaverUP</span>
+      <video autoPlay loop muted playsInline src="/WhatsApp Video 2026-05-30 at 19.39.32.mp4" />
+      <p>Sending...</p>
+    </div>
+  );
+}
+
 // --- Render practice workspace ---
 function WorkspacePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialMode = searchParams.get('mode') || 'conversation';
+  const resolvedInitialMode = ['conversation', 'story', 'translate'].includes(initialMode) ? initialMode : 'conversation';
   const [settings, setSettings] = useState({
-    mode: ['conversation', 'story', 'translate'].includes(initialMode) ? initialMode : 'conversation',
+    mode: resolvedInitialMode,
     language: 'German',
     level: 'A2',
     topic: '',
     wordGroup: ''
   });
   const [messages, setMessages] = useState([
-    {
-      role: 'beaver',
-      parts: [startMessages[['conversation', 'story', 'translate'].includes(initialMode) ? initialMode : 'conversation']]
-    }
+    ...getInitialMessages(resolvedInitialMode)
   ]);
+  const [sessionStarted, setSessionStarted] = useState(resolvedInitialMode === 'translate');
   const [userInput, setUserInput] = useState('');
   const [lastStory, setLastStory] = useState(null);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
+  const showStartButton = ['conversation', 'story'].includes(settings.mode) && !sessionStarted;
 
   const submitLabel = useMemo(() => {
     if (settings.mode === 'story') {
-      return lastStory ? 'Create next story' : 'Generate story';
+      return lastStory ? 'Create next story' : 'Send';
     }
 
     if (settings.mode === 'translate') {
@@ -90,7 +108,8 @@ function WorkspacePage() {
 
     if (name === 'mode') {
       setSearchParams({ mode: value });
-      setMessages([{ role: 'beaver', parts: [startMessages[value]] }]);
+      setMessages(getInitialMessages(value));
+      setSessionStarted(value === 'translate');
       setLastStory(null);
       setUserInput('');
       setError('');
@@ -98,7 +117,7 @@ function WorkspacePage() {
   }
 
   // --- Build mode-specific request body ---
-  function buildInteractionPayload() {
+  function buildInteractionPayload(isStart = false) {
     const basePayload = {
       mode: settings.mode,
       language: settings.language,
@@ -113,7 +132,7 @@ function WorkspacePage() {
       return {
         ...basePayload,
         interactionType: 'conversation_turn',
-        userInput: userInput.trim()
+        userInput: isStart ? undefined : userInput.trim()
       };
     }
 
@@ -125,10 +144,10 @@ function WorkspacePage() {
 
       return {
         ...basePayload,
-        interactionType: lastStory && userInput.trim() ? 'story_followup' : 'story_start',
+        interactionType: isStart ? 'story_start' : 'story_followup',
         previousInteractionId: lastStory?.interactionId || null,
         previousTopic: lastStory?.topic || null,
-        userInput: userInput.trim() || undefined,
+        userInput: isStart ? undefined : userInput.trim(),
         wordGroup: words
       };
     }
@@ -138,6 +157,37 @@ function WorkspacePage() {
       interactionType: 'translate_request',
       userInput: userInput.trim()
     };
+  }
+
+  // --- Start conversation or first story before showing text input ---
+  async function handleStart(event) {
+    event.preventDefault();
+    setError('');
+
+    if (!settings.language.trim()) {
+      setError('Language is required.');
+      return;
+    }
+
+    setSending(true);
+
+    try {
+      const interaction = await createInteraction(buildInteractionPayload(true));
+
+      setMessages(currentMessages => [
+        ...currentMessages,
+        { role: 'beaver', parts: buildBeaverMessage(interaction) }
+      ]);
+      setSessionStarted(true);
+
+      if (settings.mode === 'story') {
+        setLastStory(interaction);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSending(false);
+    }
   }
 
   // --- Send interaction to backend ---
@@ -150,6 +200,11 @@ function WorkspacePage() {
       return;
     }
 
+    if (settings.mode === 'story' && !userInput.trim()) {
+      setError('Write the difficult or interesting words first.');
+      return;
+    }
+
     if (settings.mode !== 'story' && !userInput.trim()) {
       setError('Write something first.');
       return;
@@ -158,7 +213,7 @@ function WorkspacePage() {
     setSending(true);
 
     try {
-      const payload = buildInteractionPayload();
+      const payload = buildInteractionPayload(false);
       const userMessage = userInput.trim() || 'Generate a story.';
       const interaction = await createInteraction(payload);
 
@@ -194,6 +249,11 @@ function WorkspacePage() {
         {error && <p className="status-message error-message">{error}</p>}
 
         <div className="chat-thread">
+          {showStartButton && messages.length === 0 && !sending && (
+            <div className="start-empty-state">
+              <p>{settings.mode === 'story' ? 'Start a short story from your settings.' : 'Start a conversation from your settings.'}</p>
+            </div>
+          )}
           {messages.map((message, index) => (
             <div className={`message ${message.role === 'user' ? 'user-message' : 'beaver-message'}`} key={`${message.role}-${index}`}>
               <span>{message.role === 'user' ? 'You' : 'BeaverUP'}</span>
@@ -202,18 +262,27 @@ function WorkspacePage() {
               ))}
             </div>
           ))}
+          {sending && <ThinkingMessage />}
         </div>
 
-        <form className="chat-input" onSubmit={handleSubmit}>
-          <textarea
-            onChange={event => setUserInput(event.target.value)}
-            placeholder={settings.mode === 'story' ? 'Optional: words for the next story...' : 'Write your message...'}
-            value={userInput}
-          />
-          <button disabled={sending} type="submit">
-            {sending ? 'Sending...' : submitLabel}
-          </button>
-        </form>
+        {showStartButton ? (
+          <form className="start-input" onSubmit={handleStart}>
+            <button disabled={sending} type="submit">
+              {sending ? 'Sending...' : 'Start'}
+            </button>
+          </form>
+        ) : (
+          <form className="chat-input" onSubmit={handleSubmit}>
+            <textarea
+              onChange={event => setUserInput(event.target.value)}
+              placeholder={settings.mode === 'story' ? 'Write difficult or interesting words...' : 'Write your message...'}
+              value={userInput}
+            />
+            <button disabled={sending} type="submit">
+              {sending ? 'Sending...' : submitLabel}
+            </button>
+          </form>
+        )}
       </div>
 
       <aside className="side-card">

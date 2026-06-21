@@ -66,7 +66,8 @@ const getSystemInstructions = () => {
         'You are BeaverUP, a structured CEFR-based language performance trainer for spoken fluency.',
         'Return only valid JSON that matches the provided schema.',
         'Use the selected mode exactly: conversation, story, or translate.',
-        'Conversation mode: return nativeRewrite, higherLevelRewrite, 3 useful learningItems, grammar/structure improvements inside meanings when useful, and exactly one nextPrompt.',
+        'Conversation mode with no userInput: start the session by returning only one first question in nextPrompt. Leave rewrites null and learningItems empty.',
+        'Conversation mode with userInput: always return nativeRewrite and higherLevelRewrite for the exact userInput, return wordTranslations as an empty array, return translation as null, return 3 useful learningItems, and return exactly one nextPrompt.',
         'Story mode: generate storyText up to 100 words, return wordTranslations for requested words, return useful learningItems, and ask which words or phrases were difficult or interesting.',
         'Story follow-up: use a topic completely different from the previousTopic when provided.',
         'Translate mode: return direct natural translations in translation, with no long explanation. Include at most two options for ambiguous terms.',
@@ -115,6 +116,23 @@ const ensurePracticeShape = result => {
     };
 };
 
+const normalizeModeResult = (interaction, result) => {
+    const shapedResult = ensurePracticeShape(result);
+    const hasUserInput = Boolean(String(interaction.userInput || '').trim());
+
+    if (interaction.mode === 'conversation') {
+        return {
+            ...shapedResult,
+            storyText: null,
+            wordTranslations: [],
+            translation: null,
+            learningItems: hasUserInput ? shapedResult.learningItems : []
+        };
+    }
+
+    return shapedResult;
+};
+
 const generatePracticeResponse = async interaction => {
     if (!client || env.ai.apiKey.includes('replace_with')) {
         const error = new Error('AI API key is not configured.');
@@ -144,7 +162,7 @@ const generatePracticeResponse = async interaction => {
             }
         });
 
-        return ensurePracticeShape(parseAiJson(response));
+        return normalizeModeResult(interaction, parseAiJson(response));
     } catch (error) {
         if (error.code === 'AI_INVALID_RESPONSE') {
             throw error;

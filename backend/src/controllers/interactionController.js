@@ -28,8 +28,14 @@ const getInteractionType = (mode, interactionType) => {
 const validateInteractionInput = body => {
     const interactionType = getInteractionType(body.mode, body.interactionType);
 
+    const isConversationStart =
+        body.mode === 'conversation' &&
+        interactionType === 'conversation_turn' &&
+        (body.userInput === undefined || body.userInput === '' || body.userInput === null);
+
     if (
         interactionType !== 'story_start' &&
+        !isConversationStart &&
         (body.userInput === undefined || body.userInput === '' || body.userInput === null)
     ) {
         return { message: 'Missing required interaction fields.', details: { missingFields: ['userInput'] } };
@@ -99,6 +105,40 @@ const findOrCreateLearningItems = async ({ userId, language, items, transaction 
     return savedItems;
 };
 
+const normalizeConversationResult = (interactionInput, aiResult) => {
+    const hasUserInput = Boolean(String(interactionInput.userInput || '').trim());
+
+    if (interactionInput.mode !== 'conversation') {
+        return aiResult;
+    }
+
+    if (!hasUserInput) {
+        return {
+            ...aiResult,
+            nativeRewrite: null,
+            higherLevelRewrite: null,
+            wordTranslations: [],
+            translation: null,
+            learningItems: []
+        };
+    }
+
+    const fallbackRewrite =
+        aiResult.nativeRewrite ||
+        aiResult.higherLevelRewrite ||
+        (aiResult.translation ? Object.values(aiResult.translation)[0] : null) ||
+        null;
+
+    return {
+        ...aiResult,
+        nativeRewrite: aiResult.nativeRewrite || fallbackRewrite,
+        higherLevelRewrite: aiResult.higherLevelRewrite || fallbackRewrite,
+        storyText: null,
+        wordTranslations: [],
+        translation: null
+    };
+};
+
 const getAllInteractions = async (req, res) => {
     try {
         const interactions = await Interaction.findAll({
@@ -159,7 +199,7 @@ const createInteraction = async (req, res) => {
             ...req.body,
             interactionType: getInteractionType(req.body.mode, req.body.interactionType)
         };
-        const aiResult = await generatePracticeResponse(interactionInput);
+        const aiResult = normalizeConversationResult(interactionInput, await generatePracticeResponse(interactionInput));
         const transaction = await sequelize.transaction();
 
         try {
