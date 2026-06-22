@@ -390,6 +390,10 @@ x-user-role: user
 
 Use `x-user-role: admin` for admin-only requests.
 
+To test protected routes, please send a POST request to /api/auth/login. 
+Copy the returned token and either set it as a {{token}} variable in Postman
+or paste it directly into the Authorization tab as a Bearer Token.
+
 ## Known Limitations
 
 - Authentication uses localStorage and mock headers (`x-user-id`, `x-user-role`), not JWT or sessions.
