@@ -42,6 +42,7 @@ beaverup/
       services/
       App.js
     package.json
+    .env.example
   postman/
     BeaverUp.postman_collection.json
 ```
@@ -60,6 +61,18 @@ Install frontend dependencies:
 ```bash
 cd frontend
 npm install
+```
+
+Create a local frontend env file from:
+
+```text
+frontend/.env.example
+```
+
+Save it as:
+
+```text
+frontend/.env
 ```
 
 ## Database Setup
@@ -119,7 +132,14 @@ AI_MODEL=gpt-4o-mini
 AI_MAX_OUTPUT_TOKENS=500
 ```
 
-Do not commit `backend/.env`. Commit only `backend/.env.example`.
+Frontend variables:
+
+```text
+PORT=5173
+REACT_APP_API_BASE_URL=http://localhost:3000
+```
+
+Do not commit real `.env` files. Commit only `backend/.env.example` and `frontend/.env.example`.
 
 ## Run The App
 
@@ -394,11 +414,79 @@ To test protected routes, please send a POST request to /api/auth/login.
 Copy the returned token and either set it as a {{token}} variable in Postman
 or paste it directly into the Authorization tab as a Bearer Token.
 
+## Deployment
+
+Deploy the app as three connected services:
+
+```text
+React frontend -> Render Static Site
+Node/Express backend -> Render Web Service
+MySQL database -> AWS RDS
+```
+
+AWS RDS:
+
+```text
+Engine: MySQL
+Database name: beaverup
+Public access: Yes
+Inbound rule: MySQL/Aurora, port 3306, from the address range required by the course/presentation
+```
+
+Render backend web service:
+
+```text
+Root Directory: backend
+Build Command: npm install
+Start Command: npm start
+```
+
+Backend Render environment variables:
+
+```text
+PORT=10000
+FRONTEND_URL=https://your-frontend-service.onrender.com
+
+DB_HOST=your-rds-endpoint.amazonaws.com
+DB_PORT=3306
+DB_NAME=beaverup
+DB_USER=admin
+DB_PASSWORD=your_aws_rds_password
+
+AI_PROVIDER=openai
+AI_API_KEY=your_openai_api_key
+AI_MODEL=gpt-4o-mini
+AI_MAX_OUTPUT_TOKENS=500
+```
+
+Render frontend static site:
+
+```text
+Root Directory: frontend
+Build Command: npm install && npm run build
+Publish Directory: build
+```
+
+Frontend Render environment variables:
+
+```text
+REACT_APP_API_BASE_URL=https://your-backend-service.onrender.com
+```
+
+After the AWS database is available, use the RDS endpoint and password in a local `backend/.env`, then run:
+
+```bash
+cd backend
+npm run db:test
+npm run db:sync
+```
+
+After the frontend has its final Render URL, update the backend `FRONTEND_URL` value in Render and redeploy the backend.
+
 ## Known Limitations
 
 - Authentication uses localStorage and mock headers (`x-user-id`, `x-user-role`), not JWT or sessions.
 - Passwords are hashed, but authentication is intentionally simple for the assignment.
 - Chat room messages are live only and are not saved in MySQL.
 - OpenAI usage depends on the API key quota and billing setup.
-
 
