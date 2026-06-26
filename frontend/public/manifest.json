@@ -3,7 +3,7 @@
   "name": "BeaverUp",
   "icons": [
     {
-      "src": "assets/pic-logo.png",
+      "src": "assets/pic-logo-round.png",
       "sizes": "512x512",
       "type": "image/png"
     },
