@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import ModeCard from '../components/ModeCard';
 import { useAuth } from '../context/AuthContext';
 import { getLearningItems } from '../services/api';
+import { getLearningLanguages } from '../utils/languages';
+import { getLevelLabel } from '../utils/levels';
 
 // --- Define available practice modes ---
 const modes = [
@@ -28,6 +30,7 @@ const modes = [
 // --- Render mode selection dashboard ---
 function DashboardPage() {
   const { authSource, user } = useAuth();
+  const learningLanguages = getLearningLanguages(user);
   const [progressCount, setProgressCount] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(true);
   const [progressError, setProgressError] = useState('');
@@ -65,8 +68,8 @@ function DashboardPage() {
 
       <article className="learning-summary">
         <div>
-          <span>Current language</span>
-          <strong>{user?.languageToLearn || 'Not set'}</strong>
+          <span>Learning languages</span>
+          <strong>{learningLanguages.length > 0 ? learningLanguages.join(', ') : 'Not set'}</strong>
         </div>
         <div>
           <span>Saved progress items</span>
@@ -74,7 +77,7 @@ function DashboardPage() {
         </div>
         <div>
           <span>Current level</span>
-          <strong>{user?.currentLevel || 'Not set'}</strong>
+          <strong>{getLevelLabel(user?.currentLevel)}</strong>
         </div>
       </article>
       {progressError && <p className="status-message error-message">{progressError}</p>}

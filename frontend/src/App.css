@@ -90,6 +90,102 @@ textarea {
   width: 100%;
 }
 
+.language-picker {
+  position: relative;
+}
+
+.language-picker-button {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.language-picker-button:hover {
+  background: var(--input-bg);
+  color: var(--text);
+  transform: none;
+}
+
+.language-picker-button span {
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.language-picker-button strong {
+  color: var(--green-dark);
+  flex: 0 0 auto;
+}
+
+.language-picker-menu {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 4px;
+  left: 0;
+  max-height: 300px;
+  overflow: hidden;
+  padding: 8px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 5;
+}
+
+.language-picker-options {
+  display: grid;
+  gap: 4px;
+  max-height: 214px;
+  overflow-y: auto;
+}
+
+.language-option {
+  align-items: center;
+  border-radius: 8px;
+  color: var(--text);
+  display: flex;
+  gap: 10px;
+  padding: 8px;
+}
+
+.language-option:hover {
+  background: var(--summary-bg);
+}
+
+.language-option input {
+  min-height: auto;
+  width: auto;
+}
+
+.language-select-all {
+  background: var(--summary-bg);
+  border: 1px solid var(--border);
+  color: var(--green-dark);
+  font-size: 0.9rem;
+  min-height: 36px;
+  width: 100%;
+}
+
+.language-select-all:hover {
+  background: var(--panel-strong);
+  color: var(--green-dark);
+  transform: none;
+}
+
+.language-picker-done {
+  min-height: 38px;
+  width: 100%;
+}
+
 textarea {
   min-height: 54px;
   resize: vertical;
@@ -502,6 +598,27 @@ p {
   gap: 12px;
   grid-template-columns: 1fr auto;
   padding: 18px;
+}
+
+.chat-input.has-mic {
+  grid-template-columns: 1fr auto auto;
+}
+
+.mic-button {
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  color: var(--green-dark);
+  min-width: 76px;
+}
+
+.mic-button:hover {
+  background: var(--summary-bg);
+  color: var(--green-dark);
+}
+
+.mic-button.is-listening {
+  background: #a33a35;
+  color: #fff;
 }
 
 .start-input {

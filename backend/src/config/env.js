@@ -3,9 +3,20 @@ const dotenv = require('dotenv');
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env'), quiet: true });
 
+const parseList = value => {
+    return String(value || '')
+        .split(',')
+        .map(item => item.trim())
+        .filter(Boolean);
+};
+
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+const frontendUrls = [...new Set([frontendUrl, ...parseList(process.env.FRONTEND_URLS)])];
+
 const env = {
     port: process.env.PORT || 3000,
-    frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
+    frontendUrl,
+    frontendUrls,
     db: {
         host: process.env.DB_HOST || 'localhost',
         port: Number(process.env.DB_PORT || 3306),

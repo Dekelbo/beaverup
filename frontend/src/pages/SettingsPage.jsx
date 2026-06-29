@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
+import LanguageMultiSelect from '../components/LanguageMultiSelect';
+import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { getCurrentUser, updateCurrentUser } from '../services/api';
+import { getCurrentUser } from '../services/api';
+import { COMMON_LANGUAGES, parseLanguages } from '../utils/languages';
+import { LEVELS } from '../utils/levels';
 
 const emptyUser = {
   firstName: '',
@@ -14,6 +18,7 @@ const emptyUser = {
 
 // --- Render profile and theme settings ---
 function SettingsPage() {
+  const { updateUser } = useAuth();
   const { isDarkMode, toggleTheme } = useTheme();
   const [form, setForm] = useState(emptyUser);
   const [loading, setLoading] = useState(true);
@@ -59,15 +64,20 @@ function SettingsPage() {
       return;
     }
 
-    if (!form.userNativeLanguage.trim() || !form.languageToLearn.trim()) {
-      setError('Native language and language to learn are required.');
+    if (!form.userNativeLanguage.trim()) {
+      setError('Native language is required.');
+      return;
+    }
+
+    if (parseLanguages(form.languageToLearn).length === 0) {
+      setError('Choose at least one language to learn.');
       return;
     }
 
     setSaving(true);
 
     try {
-      const updatedUser = await updateCurrentUser(form);
+      const updatedUser = await updateUser(form);
       setForm(updatedUser);
       setMessage('Settings saved.');
     } catch (err) {
@@ -104,21 +114,27 @@ function SettingsPage() {
         </label>
         <label>
           Native language
-          <input name="userNativeLanguage" onChange={handleChange} required type="text" value={form.userNativeLanguage} />
+          <select name="userNativeLanguage" onChange={handleChange} required value={form.userNativeLanguage}>
+            <option value="">Choose your native language</option>
+            {COMMON_LANGUAGES.map(language => (
+              <option key={language} value={language}>
+                {language}
+              </option>
+            ))}
+          </select>
         </label>
         <label>
-          Language to learn
-          <input name="languageToLearn" onChange={handleChange} required type="text" value={form.languageToLearn} />
+          Languages to learn
+          <LanguageMultiSelect name="languageToLearn" onChange={handleChange} value={form.languageToLearn} />
         </label>
         <label>
           Current level
           <select name="currentLevel" onChange={handleChange} value={form.currentLevel}>
-            <option value="A1">A1</option>
-            <option value="A2">A2</option>
-            <option value="B1">B1</option>
-            <option value="B2">B2</option>
-            <option value="C1">C1</option>
-            <option value="C2">C2</option>
+            {LEVELS.map(level => (
+              <option key={level.code} value={level.code}>
+                {level.code} - {level.name}
+              </option>
+            ))}
           </select>
         </label>
         <div className="setting-toggle span-two">

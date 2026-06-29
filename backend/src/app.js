@@ -15,9 +15,20 @@ const { sendError, sendSuccess } = require('./utils/responses');
 
 const app = express();
 
+const isAllowedOrigin = origin => {
+    return !origin || env.frontendUrls.includes(origin);
+};
+
 app.use(
     cors({
-        origin: env.frontendUrl,
+        origin(origin, callback) {
+            if (isAllowedOrigin(origin)) {
+                callback(null, true);
+                return;
+            }
+
+            callback(new Error('Not allowed by CORS'));
+        },
         allowedHeaders: ['Content-Type', 'x-user-role', 'x-user-id'],
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
     })

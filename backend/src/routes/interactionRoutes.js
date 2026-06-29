@@ -9,6 +9,7 @@ const {
     validateRequiredFields,
     validateUserIdBody
 } = require('../middleware/validation');
+const { LEVEL_VALUES } = require('../utils/levels');
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ const validateInteractionType = validateEnum(
     ['conversation_turn', 'story_start', 'story_followup', 'translate_request'],
     'Invalid interaction type.'
 );
-const validateLevel = validateEnum('level', ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'], 'Invalid level.');
+const validateLevel = validateEnum('level', LEVEL_VALUES, 'Invalid level.');
 
 router.get('/', isAdmin, interactionController.getAllInteractions);
 router.get('/user/:userId', validateUserIdParam, isOwnerOrAdminByUserParam, interactionController.getInteractionsByUserId);

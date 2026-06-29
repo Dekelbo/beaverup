@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getSocket } from '../services/socket';
-
-const languageRooms = ['Spanish', 'German', 'English', 'French', 'Italian', 'Japanese'];
+import { getLearningLanguages, parseLanguages } from '../utils/languages';
 
 function formatTime(value) {
   return new Intl.DateTimeFormat('en', {
@@ -16,7 +15,15 @@ function BeaverHubPage() {
   const { user } = useAuth();
   const socket = useMemo(() => getSocket(), []);
   const messagesEndRef = useRef(null);
-  const [selectedRoom, setSelectedRoom] = useState(user?.languageToLearn || languageRooms[0]);
+  const availableRooms = useMemo(() => {
+    return [
+      ...new Set([
+        ...parseLanguages(user?.userNativeLanguage),
+        ...getLearningLanguages(user)
+      ])
+    ];
+  }, [user]);
+  const [selectedRoom, setSelectedRoom] = useState(availableRooms[0] || '');
   const [currentRoom, setCurrentRoom] = useState('');
   const [draft, setDraft] = useState('');
   const [messages, setMessages] = useState([]);
@@ -69,7 +76,17 @@ function BeaverHubPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    if (!availableRooms.includes(selectedRoom)) {
+      setSelectedRoom(availableRooms[0] || '');
+    }
+  }, [availableRooms, selectedRoom]);
+
   function joinRoom() {
+    if (!selectedRoom || !availableRooms.includes(selectedRoom)) {
+      return;
+    }
+
     socket.emit('room:join', {
       room: selectedRoom,
       userId: user?.userId,
@@ -115,7 +132,8 @@ function BeaverHubPage() {
           <label>
             Language
             <select disabled={Boolean(currentRoom)} onChange={event => setSelectedRoom(event.target.value)} value={selectedRoom}>
-              {languageRooms.map(room => (
+              {availableRooms.length === 0 && <option value="">Choose languages in settings first</option>}
+              {availableRooms.map(room => (
                 <option key={room} value={room}>
                   {room}
                 </option>
@@ -125,7 +143,7 @@ function BeaverHubPage() {
 
           <div className="hub-actions">
             {!currentRoom ? (
-              <button disabled={status !== 'Connected'} onClick={joinRoom} type="button">
+              <button disabled={status !== 'Connected' || !selectedRoom} onClick={joinRoom} type="button">
                 Join room
               </button>
             ) : (
@@ -157,7 +175,7 @@ function BeaverHubPage() {
           <div className="chat-header">
             <div>
               <p className="eyebrow">Live practice</p>
-              <h1>{currentRoom || selectedRoom}</h1>
+              <h1>{currentRoom || selectedRoom || 'No room selected'}</h1>
             </div>
             <span className="level-pill">{users.length} online</span>
           </div>
@@ -166,7 +184,7 @@ function BeaverHubPage() {
             {!currentRoom && (
               <div className="message beaver-message">
                 <span>BeaverUP</span>
-                <p>Choose a language room and join when you are ready.</p>
+                <p>{selectedRoom ? 'Choose a language room and join when you are ready.' : 'Choose at least one learning language in settings first.'}</p>
               </div>
             )}
 

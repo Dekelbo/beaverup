@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import LanguageMultiSelect from '../components/LanguageMultiSelect';
 import { useAuth } from '../context/AuthContext';
+import { COMMON_LANGUAGES, parseLanguages } from '../utils/languages';
+import { LEVELS } from '../utils/levels';
 
 const initialForm = {
   firstName: '',
@@ -31,9 +34,14 @@ function SignupPage() {
     event.preventDefault();
     setError('');
 
-    const missingField = Object.values(form).some(value => !String(value).trim());
+    const missingField = Object.entries(form).some(([key, value]) => key !== 'languageToLearn' && !String(value).trim());
     if (missingField) {
       setError('Fill in all signup fields.');
+      return;
+    }
+
+    if (parseLanguages(form.languageToLearn).length === 0) {
+      setError('Choose at least one language to learn.');
       return;
     }
 
@@ -85,21 +93,27 @@ function SignupPage() {
           </label>
           <label>
             Native language
-            <input name="userNativeLanguage" onChange={handleChange} placeholder="Hebrew, English, Spanish..." required type="text" value={form.userNativeLanguage} />
+            <select name="userNativeLanguage" onChange={handleChange} required value={form.userNativeLanguage}>
+              <option value="">Choose your native language</option>
+              {COMMON_LANGUAGES.map(language => (
+                <option key={language} value={language}>
+                  {language}
+                </option>
+              ))}
+            </select>
           </label>
           <label>
-            Language to learn
-            <input name="languageToLearn" onChange={handleChange} placeholder="Spanish, German, English..." required type="text" value={form.languageToLearn} />
+            Languages to learn
+            <LanguageMultiSelect name="languageToLearn" onChange={handleChange} value={form.languageToLearn} />
           </label>
           <label>
             Current level
             <select name="currentLevel" onChange={handleChange} required value={form.currentLevel}>
-              <option value="A1">A1</option>
-              <option value="A2">A2</option>
-              <option value="B1">B1</option>
-              <option value="B2">B2</option>
-              <option value="C1">C1</option>
-              <option value="C2">C2</option>
+              {LEVELS.map(level => (
+                <option key={level.code} value={level.code}>
+                  {level.code} - {level.name}
+                </option>
+              ))}
             </select>
           </label>
           <button className="span-two" disabled={loading} type="submit">

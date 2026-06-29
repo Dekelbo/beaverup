@@ -1,6 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { createInteraction } from '../services/api';
+import LanguageMultiSelect from '../components/LanguageMultiSelect';
+import { formatLanguages, getLearningLanguages, parseLanguages } from '../utils/languages';
+import { LEVELS, getLevelLabel } from '../utils/levels';
 
 const modeLabels = {
   conversation: 'Conversation',
@@ -13,6 +17,33 @@ const startMessages = {
   story: 'Choose your language, level, optional topic, and optional words. Then generate a story.',
   translate: 'Choose the target language and write the text you want translated.'
 };
+
+const speechLanguageCodes = {
+  Arabic: 'ar',
+  Dutch: 'nl-NL',
+  English: 'en-US',
+  French: 'fr-FR',
+  German: 'de-DE',
+  Greek: 'el-GR',
+  Hebrew: 'he-IL',
+  Hindi: 'hi-IN',
+  Italian: 'it-IT',
+  Japanese: 'ja-JP',
+  Korean: 'ko-KR',
+  'Mandarin Chinese': 'zh-CN',
+  Polish: 'pl-PL',
+  Portuguese: 'pt-PT',
+  Russian: 'ru-RU',
+  Spanish: 'es-ES',
+  Swedish: 'sv-SE',
+  Thai: 'th-TH',
+  Turkish: 'tr-TR',
+  Vietnamese: 'vi-VN'
+};
+
+function getSpeechRecognition() {
+  return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+}
 
 function getInitialMessages(mode) {
   if (mode === 'translate') {
@@ -69,13 +100,16 @@ function ThinkingMessage() {
 
 // --- Render practice workspace ---
 function WorkspacePage() {
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const initialMode = searchParams.get('mode') || 'conversation';
   const resolvedInitialMode = ['conversation', 'story', 'translate'].includes(initialMode) ? initialMode : 'conversation';
+  const learningLanguages = getLearningLanguages(user);
+  const defaultLanguage = learningLanguages[0] || '';
   const [settings, setSettings] = useState({
     mode: resolvedInitialMode,
-    language: 'German',
-    level: 'A2',
+    language: defaultLanguage,
+    level: user?.currentLevel || 'A2',
     topic: '',
     wordGroup: ''
   });
@@ -87,6 +121,8 @@ function WorkspacePage() {
   const [lastStory, setLastStory] = useState(null);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
   const showStartButton = ['conversation', 'story'].includes(settings.mode) && !sessionStarted;
 
   const submitLabel = useMemo(() => {
@@ -101,26 +137,64 @@ function WorkspacePage() {
     return 'Send';
   }, [lastStory, settings.mode]);
 
+  function getSelectedSessionLanguages(mode = settings.mode, languageValue = settings.language) {
+    const selectedLanguages = parseLanguages(languageValue).filter(language => learningLanguages.includes(language));
+
+    if (mode === 'translate') {
+      return selectedLanguages;
+    }
+
+    return [selectedLanguages[0] || learningLanguages[0] || ''].filter(Boolean);
+  }
+
+  const selectedSessionLanguages = getSelectedSessionLanguages();
+  const supportsSpeechRecognition = typeof window !== 'undefined' && Boolean(getSpeechRecognition());
+
+  useEffect(() => {
+    return () => {
+      recognitionRef.current?.stop();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (settings.mode !== 'conversation' && isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+    }
+  }, [isListening, settings.mode]);
+
   // --- Update session settings ---
   function handleSettingChange(event) {
     const { name, value } = event.target;
-    setSettings(currentSettings => ({ ...currentSettings, [name]: value }));
 
     if (name === 'mode') {
+      setSettings(currentSettings => {
+        const selectedLanguages = getSelectedSessionLanguages(value, currentSettings.language);
+        return {
+          ...currentSettings,
+          mode: value,
+          language: formatLanguages(selectedLanguages)
+        };
+      });
       setSearchParams({ mode: value });
       setMessages(getInitialMessages(value));
       setSessionStarted(value === 'translate');
       setLastStory(null);
       setUserInput('');
+      recognitionRef.current?.stop();
+      setIsListening(false);
       setError('');
+      return;
     }
+
+    setSettings(currentSettings => ({ ...currentSettings, [name]: value }));
   }
 
   // --- Build mode-specific request body ---
   function buildInteractionPayload(isStart = false) {
     const basePayload = {
       mode: settings.mode,
-      language: settings.language,
+      language: formatLanguages(selectedSessionLanguages),
       level: settings.level
     };
 
@@ -164,7 +238,7 @@ function WorkspacePage() {
     event.preventDefault();
     setError('');
 
-    if (!settings.language.trim()) {
+    if (selectedSessionLanguages.length === 0) {
       setError('Language is required.');
       return;
     }
@@ -195,7 +269,7 @@ function WorkspacePage() {
     event.preventDefault();
     setError('');
 
-    if (!settings.language.trim()) {
+    if (selectedSessionLanguages.length === 0) {
       setError(settings.mode === 'translate' ? 'Target language is required.' : 'Language is required.');
       return;
     }
@@ -235,6 +309,63 @@ function WorkspacePage() {
     }
   }
 
+  function toggleSpeechInput() {
+    setError('');
+
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
+    }
+
+    const SpeechRecognition = getSpeechRecognition();
+
+    if (!SpeechRecognition) {
+      setError('Speech input is not supported in this browser. Try Chrome or Edge.');
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = speechLanguageCodes[selectedSessionLanguages[0]] || 'en-US';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = event => {
+      let finalTranscript = '';
+
+      for (let index = event.resultIndex; index < event.results.length; index += 1) {
+        const result = event.results[index];
+
+        if (result.isFinal) {
+          finalTranscript += result[0].transcript;
+        }
+      }
+
+      if (finalTranscript.trim()) {
+        setUserInput(currentInput => `${currentInput}${currentInput.trim() ? ' ' : ''}${finalTranscript.trim()}`);
+      }
+    };
+
+    recognition.onerror = event => {
+      setIsListening(false);
+      setError(event.error === 'not-allowed' ? 'Microphone permission was blocked.' : 'Speech input stopped. Please try again.');
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+
+    try {
+      recognition.start();
+      setIsListening(true);
+    } catch (err) {
+      setIsListening(false);
+      setError('Speech input could not start. Please try again.');
+    }
+  }
+
   return (
     <section className="workspace">
       <div className="chat-panel">
@@ -243,7 +374,7 @@ function WorkspacePage() {
             <p className="eyebrow">Practice</p>
             <h1>{modeLabels[settings.mode]} workspace</h1>
           </div>
-          <span className="level-pill">{settings.level}</span>
+          <span className="level-pill">{getLevelLabel(settings.level)}</span>
         </div>
 
         {error && <p className="status-message error-message">{error}</p>}
@@ -272,12 +403,24 @@ function WorkspacePage() {
             </button>
           </form>
         ) : (
-          <form className="chat-input" onSubmit={handleSubmit}>
+          <form className={`chat-input ${settings.mode === 'conversation' ? 'has-mic' : ''}`} onSubmit={handleSubmit}>
             <textarea
               onChange={event => setUserInput(event.target.value)}
               placeholder={settings.mode === 'story' ? 'Write difficult or interesting words...' : 'Write your message...'}
               value={userInput}
             />
+            {settings.mode === 'conversation' && (
+              <button
+                aria-pressed={isListening}
+                className={`mic-button ${isListening ? 'is-listening' : ''}`}
+                disabled={sending || !supportsSpeechRecognition}
+                onClick={toggleSpeechInput}
+                title={supportsSpeechRecognition ? 'Speak your answer' : 'Speech input is not supported in this browser'}
+                type="button"
+              >
+                {isListening ? 'Stop mic' : 'Mic'}
+              </button>
+            )}
             <button disabled={sending} type="submit">
               {sending ? 'Sending...' : submitLabel}
             </button>
@@ -297,17 +440,35 @@ function WorkspacePage() {
         </label>
         <label>
           {settings.mode === 'translate' ? 'Target language' : 'Language'}
-          <input name="language" onChange={handleSettingChange} type="text" value={settings.language} />
+          {settings.mode === 'translate' ? (
+            <LanguageMultiSelect
+              allowSelectAll
+              maxSelections={learningLanguages.length}
+              name="language"
+              onChange={handleSettingChange}
+              options={learningLanguages}
+              placeholder="Choose target languages"
+              value={formatLanguages(selectedSessionLanguages)}
+            />
+          ) : (
+            <select name="language" onChange={handleSettingChange} value={selectedSessionLanguages[0] || ''}>
+              {learningLanguages.length === 0 && <option value="">Choose languages in settings first</option>}
+              {learningLanguages.map(language => (
+                <option key={language} value={language}>
+                  {language}
+                </option>
+              ))}
+            </select>
+          )}
         </label>
         <label>
           Level
           <select name="level" onChange={handleSettingChange} value={settings.level}>
-            <option value="A1">A1</option>
-            <option value="A2">A2</option>
-            <option value="B1">B1</option>
-            <option value="B2">B2</option>
-            <option value="C1">C1</option>
-            <option value="C2">C2</option>
+            {LEVELS.map(level => (
+              <option key={level.code} value={level.code}>
+                {level.code} - {level.name}
+              </option>
+            ))}
           </select>
         </label>
         {settings.mode !== 'translate' && (

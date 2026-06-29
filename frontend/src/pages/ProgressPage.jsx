@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { createLearningItem, deleteLearningItem, getLearningItems, updateLearningItem } from '../services/api';
+import { getLearningLanguages } from '../utils/languages';
 
 const emptyItemForm = {
   language: '',
@@ -11,13 +13,16 @@ const emptyItemForm = {
 
 // --- Render learning progress table ---
 function ProgressPage() {
+  const { user } = useAuth();
+  const learningLanguages = getLearningLanguages(user);
+  const defaultLanguage = learningLanguages[0] || '';
   const [items, setItems] = useState([]);
   const [languageFilter, setLanguageFilter] = useState('all');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const [form, setForm] = useState(emptyItemForm);
+  const [form, setForm] = useState({ ...emptyItemForm, language: defaultLanguage });
   const [editingId, setEditingId] = useState(null);
 
   // --- Load learning items ---
@@ -45,7 +50,7 @@ function ProgressPage() {
   }
 
   function resetForm() {
-    setForm(emptyItemForm);
+    setForm({ ...emptyItemForm, language: defaultLanguage });
     setEditingId(null);
   }
 
@@ -122,7 +127,14 @@ function ProgressPage() {
         <form className="inline-form" onSubmit={handleSubmit}>
           <label>
             Language
-            <input name="language" onChange={handleFormChange} placeholder="German" value={form.language} />
+            <select name="language" onChange={handleFormChange} value={form.language}>
+              {learningLanguages.length === 0 && <option value="">Choose languages in settings first</option>}
+              {learningLanguages.map(language => (
+                <option key={language} value={language}>
+                  {language}
+                </option>
+              ))}
+            </select>
           </label>
           <label>
             Type

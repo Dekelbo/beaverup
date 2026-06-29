@@ -2,6 +2,7 @@ const express = require('express');
 const userController = require('../controllers/userController');
 const { isAdmin, isAdminOrManager, isAdminOrManagerOrOwnerByIdParam, isOwnerOrAdmin } = require('../middleware/auth');
 const { validateEnum, validateNumericParam, validateRequiredFields } = require('../middleware/validation');
+const { LEVEL_VALUES } = require('../utils/levels');
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ const userRequiredFields = [
     'currentLevel'
 ];
 const validateUserRole = validateEnum('userRole', ['admin', 'manager', 'user'], 'Invalid user role.');
-const validateCurrentLevel = validateEnum('currentLevel', ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'], 'Invalid current level.');
+const validateCurrentLevel = validateEnum('currentLevel', LEVEL_VALUES, 'Invalid current level.');
 const validateUserId = validateNumericParam('id', 'id', 'Invalid user id.');
 
 router.get('/', isAdminOrManager, userController.getAllUsers);

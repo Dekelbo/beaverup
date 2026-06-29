@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState } from 'react';
-import { getStoredUser, loginUser, logoutUser, signupUser } from '../services/api';
+import { getStoredUser, loginUser, logoutUser, signupUser, updateCurrentUser } from '../services/api';
 
 const AuthContext = createContext(null);
 const AUTH_SOURCE_KEY = 'beaverup-auth-source';
@@ -32,6 +32,12 @@ function AuthProvider({ children }) {
     return signedUpUser;
   }
 
+  async function updateUser(userData) {
+    const updatedUser = await updateCurrentUser(userData);
+    setUser(updatedUser);
+    return updatedUser;
+  }
+
   // --- Logout and clear user ---
   async function logout() {
     await logoutUser();
@@ -47,6 +53,7 @@ function AuthProvider({ children }) {
       login,
       logout,
       signup,
+      updateUser,
       user
     }),
     [authSource, user]

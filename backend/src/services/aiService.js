@@ -1,5 +1,6 @@
 const OpenAI = require('openai');
 const env = require('../config/env');
+const { getLevelDetails } = require('../utils/levels');
 
 const client = env.ai.apiKey
     ? new OpenAI({
@@ -76,6 +77,8 @@ const getSystemInstructions = () => {
 };
 
 const buildUserPrompt = interaction => {
+    const levelDetails = getLevelDetails(interaction.level);
+
     return JSON.stringify(
         {
             task: 'Create a BeaverUP practice response.',
@@ -83,6 +86,7 @@ const buildUserPrompt = interaction => {
             interactionType: interaction.interactionType,
             language: interaction.language,
             level: interaction.level,
+            levelDetails,
             topic: interaction.topic || null,
             previousTopic: interaction.previousTopic || null,
             wordGroup: interaction.wordGroup || [],

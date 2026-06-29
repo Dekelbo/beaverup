@@ -49,7 +49,7 @@ const removeSocketFromRoom = (io, socket) => {
 const initializeSocket = server => {
     const io = new Server(server, {
         cors: {
-            origin: env.frontendUrl,
+            origin: env.frontendUrls,
             methods: ['GET', 'POST']
         }
     });

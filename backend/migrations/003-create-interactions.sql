@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS interactions (
     mode ENUM('conversation', 'story', 'translate') NOT NULL,
     interactionType ENUM('conversation_turn', 'story_start', 'story_followup', 'translate_request') NOT NULL,
     language VARCHAR(100) NOT NULL,
-    level ENUM('A1', 'A2', 'B1', 'B2', 'C1', 'C2') NOT NULL,
+    level ENUM('A1', 'A1+', 'A2', 'A2+', 'B1', 'B1+', 'B2', 'B2+', 'C1', 'C1+', 'C2', 'C2+') NOT NULL,
     topic VARCHAR(150),
     previousTopic VARCHAR(150),
     previousInteractionId INT,

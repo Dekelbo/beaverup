@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+const { LEVEL_VALUES } = require('../src/utils/levels');
 
 module.exports = sequelize => {
     const Interaction = sequelize.define(
@@ -26,7 +27,7 @@ module.exports = sequelize => {
                 allowNull: false
             },
             level: {
-                type: DataTypes.ENUM('A1', 'A2', 'B1', 'B2', 'C1', 'C2'),
+                type: DataTypes.ENUM(...LEVEL_VALUES),
                 allowNull: false
             },
             topic: {
