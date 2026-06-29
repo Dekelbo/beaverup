@@ -112,6 +112,15 @@ npm run db:sync
 
 The migration files are also available in `backend/migrations` if the database needs to be created manually from SQL files.
 
+If an existing database was created before the 12-level BeaverUP scale, run:
+
+```bash
+cd backend
+mysql -h your-db-host -P 3306 -u your-db-user -p beaverup < migrations/007-update-level-scale.sql
+```
+
+This updates `users.currentLevel` and `interactions.level` so the database accepts values such as `A1+`, `A2+`, `B1+`, `B2+`, `C1+`, and `C2+`.
+
 ## Environment Variables
 
 Backend variables:
@@ -119,6 +128,7 @@ Backend variables:
 ```text
 PORT=3000
 FRONTEND_URL=http://localhost:5173
+FRONTEND_URLS=http://localhost:5173,https://your-frontend-service.onrender.com
 
 DB_HOST=localhost
 DB_PORT=3306
@@ -446,6 +456,7 @@ Backend Render environment variables:
 ```text
 PORT=10000
 FRONTEND_URL=https://your-frontend-service.onrender.com
+FRONTEND_URLS=http://localhost:5173,https://your-frontend-service.onrender.com
 
 DB_HOST=your-rds-endpoint.amazonaws.com
 DB_PORT=3306
@@ -481,7 +492,15 @@ npm run db:test
 npm run db:sync
 ```
 
-After the frontend has its final Render URL, update the backend `FRONTEND_URL` value in Render and redeploy the backend.
+For deployments that include database schema changes, deploy in this order:
+
+```text
+1. Deploy the backend.
+2. Run any required database migration, such as backend/migrations/007-update-level-scale.sql.
+3. Deploy the frontend.
+```
+
+After the frontend has its final Render URL, update the backend `FRONTEND_URL` and `FRONTEND_URLS` values in Render and redeploy the backend.
 
 ## Known Limitations
 
@@ -489,4 +508,3 @@ After the frontend has its final Render URL, update the backend `FRONTEND_URL` v
 - Passwords are hashed, but authentication is intentionally simple for the assignment.
 - Chat room messages are live only and are not saved in MySQL.
 - OpenAI usage depends on the API key quota and billing setup.
-
