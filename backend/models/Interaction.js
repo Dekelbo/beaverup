@@ -75,6 +75,24 @@ module.exports = sequelize => {
             nextPrompt: {
                 type: DataTypes.TEXT,
                 allowNull: true
+            },
+            displayMessage: {
+                type: DataTypes.TEXT,
+                allowNull: true
+            },
+            glossary: {
+                type: DataTypes.JSON,
+                allowNull: false,
+                defaultValue: []
+            },
+            nextPromptTranslation: {
+                type: DataTypes.TEXT,
+                allowNull: true
+            },
+            suggestedLearningItems: {
+                type: DataTypes.JSON,
+                allowNull: false,
+                defaultValue: []
             }
         },
         {

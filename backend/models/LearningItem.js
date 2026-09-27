@@ -18,7 +18,7 @@ module.exports = sequelize => {
                 allowNull: false
             },
             type: {
-                type: DataTypes.ENUM('word', 'phrase', 'rewrite', 'expression'),
+                type: DataTypes.ENUM('word', 'phrase', 'rewrite', 'expression', 'grammar', 'culture', 'song'),
                 allowNull: false
             },
             sourceText: {
@@ -36,6 +36,11 @@ module.exports = sequelize => {
             context: {
                 type: DataTypes.STRING(255),
                 allowNull: true
+            },
+            isFavorite: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                defaultValue: false
             }
         },
         {

@@ -79,8 +79,25 @@ const getLevelDetails = code => {
     return LEVELS.find(level => level.code === code) || null;
 };
 
+const getAdjacentLevel = (code, direction) => {
+    const index = LEVEL_VALUES.indexOf(code);
+    if (index === -1) {
+        return code;
+    }
+
+    const step = direction === 'up' ? 1 : -1;
+    const nextIndex = index + step;
+
+    if (nextIndex < 0 || nextIndex >= LEVEL_VALUES.length) {
+        return code;
+    }
+
+    return LEVEL_VALUES[nextIndex];
+};
+
 module.exports = {
     LEVELS,
     LEVEL_VALUES,
+    getAdjacentLevel,
     getLevelDetails
 };

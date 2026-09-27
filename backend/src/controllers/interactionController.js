@@ -1,8 +1,11 @@
-const { Interaction, LearningItem, sequelize } = require('../../models');
+const { DifficultyFeedback, Interaction, LearningItem, User, sequelize } = require('../../models');
 const { getLoggedInUser } = require('../middleware/auth');
 const { generatePracticeResponse } = require('../services/aiService');
-const { normalizeSourceText } = require('../utils/learningItems');
+const { getAdjacentLevel } = require('../utils/levels');
 const { sendError, sendSuccess } = require('../utils/responses');
+
+const RECENT_TURNS_LIMIT = 5;
+const FEEDBACK_PATTERN_LIMIT = 5;
 
 const canAccessUserData = (req, userId) => {
     const loggedInUser = getLoggedInUser(req);
@@ -69,7 +72,8 @@ const serializeInteraction = interaction => {
     const plainInteraction = typeof interaction.get === 'function' ? interaction.get({ plain: true }) : interaction;
     return {
         ...plainInteraction,
-        learningItems: plainInteraction.learningItems || []
+        learningItems: plainInteraction.learningItems || [],
+        suggestedLearningItems: plainInteraction.suggestedLearningItems || []
     };
 };
 
@@ -79,30 +83,20 @@ const findInteractionWithLearningItems = interactionId => {
     });
 };
 
-const findOrCreateLearningItems = async ({ userId, language, items, transaction }) => {
-    const savedItems = [];
+const getRecentTurns = async (userId, language) => {
+    const interactions = await Interaction.findAll({
+        where: { userId, language },
+        order: [['interactionId', 'DESC']],
+        limit: RECENT_TURNS_LIMIT
+    });
 
-    for (const item of items) {
-        const normalizedSourceText = normalizeSourceText(item.sourceText);
-        const [learningItem] = await LearningItem.findOrCreate({
-            where: {
-                userId,
-                language,
-                type: item.type,
-                normalizedSourceText
-            },
-            defaults: {
-                sourceText: item.sourceText,
-                meaning: item.meaning,
-                context: item.context || null
-            },
-            transaction
-        });
-
-        savedItems.push(learningItem);
-    }
-
-    return savedItems;
+    return interactions
+        .reverse()
+        .map(interaction => ({
+            userInput: interaction.userInput,
+            nativeRewrite: interaction.nativeRewrite,
+            nextPrompt: interaction.nextPrompt
+        }));
 };
 
 const normalizeConversationResult = (interactionInput, aiResult) => {
@@ -195,10 +189,22 @@ const createInteraction = async (req, res) => {
         }
 
         const userId = parseInt(req.body.userId, 10);
+        const interactionType = getInteractionType(req.body.mode, req.body.interactionType);
+        const [user, recentTurns] = await Promise.all([
+            User.findByPk(userId),
+            getRecentTurns(userId, req.body.language)
+        ]);
+
         const interactionInput = {
             ...req.body,
-            interactionType: getInteractionType(req.body.mode, req.body.interactionType)
+            interactionType,
+            nativeLanguage: user ? user.userNativeLanguage : null,
+            recentTurns,
+            avoidRepeating: req.body.changeQuestion
+                ? req.body.avoidRepeating || req.body.previousTopic || null
+                : null
         };
+
         const aiResult = normalizeConversationResult(interactionInput, await generatePracticeResponse(interactionInput));
         const transaction = await sequelize.transaction();
 
@@ -207,7 +213,7 @@ const createInteraction = async (req, res) => {
                 {
                     userId,
                     mode: req.body.mode,
-                    interactionType: interactionInput.interactionType,
+                    interactionType,
                     language: req.body.language,
                     level: req.body.level,
                     topic: req.body.topic || null,
@@ -220,18 +226,15 @@ const createInteraction = async (req, res) => {
                     storyText: aiResult.storyText,
                     wordTranslations: aiResult.wordTranslations,
                     translation: aiResult.translation,
-                    nextPrompt: aiResult.nextPrompt
+                    nextPrompt: aiResult.nextPrompt,
+                    displayMessage: aiResult.displayMessage,
+                    glossary: aiResult.glossary,
+                    nextPromptTranslation: aiResult.nextPromptTranslation,
+                    suggestedLearningItems: aiResult.learningItems
                 },
                 { transaction }
             );
 
-            const savedLearningItems = await findOrCreateLearningItems({
-                userId,
-                language: req.body.language,
-                items: aiResult.learningItems,
-                transaction
-            });
-            await interaction.setLearningItems(savedLearningItems, { transaction });
             await transaction.commit();
 
             const savedInteraction = await findInteractionWithLearningItems(interaction.interactionId);
@@ -293,7 +296,11 @@ const updateInteraction = async (req, res) => {
             'storyText',
             'wordTranslations',
             'translation',
-            'nextPrompt'
+            'nextPrompt',
+            'displayMessage',
+            'glossary',
+            'nextPromptTranslation',
+            'suggestedLearningItems'
         ];
 
         allowedFields.forEach(field => {
@@ -330,6 +337,79 @@ const deleteInteraction = async (req, res) => {
     }
 };
 
+const buildLevelSuggestion = (level, tooEasyCount, tooHardCount) => {
+    if (tooEasyCount >= 4) {
+        const suggestedLevel = getAdjacentLevel(level, 'up');
+        if (suggestedLevel !== level) {
+            return {
+                direction: 'up',
+                suggestedLevel,
+                message: 'Looks like this level is becoming easy for you. Want to try a slightly higher level?'
+            };
+        }
+    }
+
+    if (tooHardCount >= 3) {
+        const suggestedLevel = getAdjacentLevel(level, 'down');
+        if (suggestedLevel !== level) {
+            return {
+                direction: 'down',
+                suggestedLevel,
+                message: "Let's make the next few questions lighter so you can build confidence, then move forward again."
+            };
+        }
+    }
+
+    return null;
+};
+
+const submitDifficultyFeedback = async (req, res) => {
+    try {
+        const interaction = await Interaction.findByPk(req.params.id);
+        if (!interaction) {
+            return sendError(res, 404, 'INTERACTION_NOT_FOUND', 'Interaction not found.');
+        }
+
+        if (!canAccessUserData(req, interaction.userId)) {
+            return sendError(res, 403, 'FORBIDDEN', 'You can only access your own data or must be an admin.', {
+                requiredOwnerId: interaction.userId
+            });
+        }
+
+        const { feedback } = req.body;
+        if (!['too_easy', 'just_right', 'too_hard'].includes(feedback)) {
+            return sendError(res, 400, 'VALIDATION_ERROR', 'Invalid difficulty feedback value.', {
+                allowedValues: ['too_easy', 'just_right', 'too_hard']
+            });
+        }
+
+        await DifficultyFeedback.create({
+            userId: interaction.userId,
+            interactionId: interaction.interactionId,
+            language: interaction.language,
+            level: interaction.level,
+            feedback
+        });
+
+        const recentFeedback = await DifficultyFeedback.findAll({
+            where: { userId: interaction.userId, language: interaction.language },
+            order: [['id', 'DESC']],
+            limit: FEEDBACK_PATTERN_LIMIT
+        });
+
+        const tooEasyCount = recentFeedback.filter(entry => entry.feedback === 'too_easy').length;
+        const tooHardCount = recentFeedback.filter(entry => entry.feedback === 'too_hard').length;
+        const levelSuggestion =
+            recentFeedback.length >= FEEDBACK_PATTERN_LIMIT
+                ? buildLevelSuggestion(interaction.level, tooEasyCount, tooHardCount)
+                : null;
+
+        return sendSuccess(res, 201, { feedbackSaved: true, levelSuggestion });
+    } catch (error) {
+        return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Could not save difficulty feedback.');
+    }
+};
+
 module.exports = {
     createInteraction,
     deleteInteraction,
@@ -337,5 +417,6 @@ module.exports = {
     getInteractionById,
     getInteractionDetails,
     getInteractionsByUserId,
+    submitDifficultyFeedback,
     updateInteraction
 };

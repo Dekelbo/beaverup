@@ -28,6 +28,7 @@ router.get('/', isAdmin, interactionController.getAllInteractions);
 router.get('/user/:userId', validateUserIdParam, isOwnerOrAdminByUserParam, interactionController.getInteractionsByUserId);
 router.get('/:id/details', validateInteractionId, interactionController.getInteractionDetails);
 router.get('/:id', validateInteractionId, interactionController.getInteractionById);
+router.post('/:id/difficulty-feedback', validateInteractionId, interactionController.submitDifficultyFeedback);
 router.post(
     '/',
     validateRequiredFields(interactionRequiredFields, 'Missing required interaction fields.'),

@@ -1,7 +1,13 @@
 const express = require('express');
 const learningItemController = require('../controllers/learningItemController');
 const { isAdmin, isOwnerOrAdminByBodyUserId, isOwnerOrAdminByUserParam } = require('../middleware/auth');
-const { validateEnum, validateNumericParam, validateRequiredFields, validateUserIdBody } = require('../middleware/validation');
+const {
+    validateEnum,
+    validateNumericBodyField,
+    validateNumericParam,
+    validateRequiredFields,
+    validateUserIdBody
+} = require('../middleware/validation');
 
 const router = express.Router();
 
@@ -10,9 +16,10 @@ const validateLearningItemId = validateNumericParam('id', 'id', 'Invalid learnin
 const validateUserIdParam = validateNumericParam('userId', 'userId', 'Invalid user id.');
 const validateLearningItemType = validateEnum(
     'type',
-    ['word', 'phrase', 'rewrite', 'expression'],
+    ['word', 'phrase', 'rewrite', 'expression', 'grammar', 'culture', 'song'],
     'Invalid learning item type.'
 );
+const validateInteractionIdBody = validateNumericBodyField('interactionId', 'Invalid interaction id.');
 
 router.get('/', isAdmin, learningItemController.getAllLearningItems);
 router.get('/user/:userId', validateUserIdParam, isOwnerOrAdminByUserParam, learningItemController.getLearningItemsByUserId);
@@ -23,6 +30,7 @@ router.post(
     validateRequiredFields(learningItemRequiredFields, 'Missing required learning item fields.'),
     validateUserIdBody,
     validateLearningItemType,
+    validateInteractionIdBody,
     isOwnerOrAdminByBodyUserId,
     learningItemController.createLearningItem
 );

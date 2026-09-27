@@ -1,5 +1,6 @@
 const { sequelize } = require('../src/config/database');
 const createAdminModel = require('./Admin');
+const createDifficultyFeedbackModel = require('./DifficultyFeedback');
 const createInteractionModel = require('./Interaction');
 const createInteractionLearningItemModel = require('./InteractionLearningItem');
 const createLearningItemModel = require('./LearningItem');
@@ -10,6 +11,7 @@ const Admin = createAdminModel(sequelize);
 const Interaction = createInteractionModel(sequelize);
 const LearningItem = createLearningItemModel(sequelize);
 const InteractionLearningItem = createInteractionLearningItemModel(sequelize);
+const DifficultyFeedback = createDifficultyFeedbackModel(sequelize);
 
 User.hasOne(Admin, {
     foreignKey: 'userId',
@@ -63,6 +65,26 @@ Interaction.hasMany(Interaction, {
     as: 'followupInteractions'
 });
 
+User.hasMany(DifficultyFeedback, {
+    foreignKey: 'userId',
+    as: 'difficultyFeedback',
+    onDelete: 'CASCADE'
+});
+DifficultyFeedback.belongsTo(User, {
+    foreignKey: 'userId',
+    as: 'user'
+});
+
+Interaction.hasMany(DifficultyFeedback, {
+    foreignKey: 'interactionId',
+    as: 'difficultyFeedback',
+    onDelete: 'SET NULL'
+});
+DifficultyFeedback.belongsTo(Interaction, {
+    foreignKey: 'interactionId',
+    as: 'interaction'
+});
+
 const syncModels = async options => {
     await sequelize.sync(options);
 };
@@ -71,6 +93,7 @@ module.exports = {
     sequelize,
     syncModels,
     Admin,
+    DifficultyFeedback,
     Interaction,
     InteractionLearningItem,
     LearningItem,

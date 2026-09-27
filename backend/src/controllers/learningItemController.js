@@ -1,6 +1,6 @@
 const { Interaction, LearningItem } = require('../../models');
 const { getLoggedInUser } = require('../middleware/auth');
-const { normalizeSourceText } = require('../utils/learningItems');
+const { findOrCreateLearningItems, normalizeSourceText } = require('../utils/learningItems');
 const { sendError, sendSuccess } = require('../utils/responses');
 
 const canAccessUserData = (req, userId) => {
@@ -73,8 +73,49 @@ const getLearningItemsByUserId = async (req, res) => {
     }
 };
 
+const removeAcceptedSuggestion = (interaction, type, sourceText) => {
+    const normalizedSourceText = normalizeSourceText(sourceText);
+    return (interaction.suggestedLearningItems || []).filter(
+        suggestion => suggestion.type !== type || normalizeSourceText(suggestion.sourceText) !== normalizedSourceText
+    );
+};
+
 const createLearningItem = async (req, res) => {
     try {
+        const interactionId = req.body.interactionId ? parseInt(req.body.interactionId, 10) : null;
+
+        if (interactionId) {
+            const interaction = await Interaction.findByPk(interactionId);
+            if (!interaction) {
+                return sendError(res, 404, 'INTERACTION_NOT_FOUND', 'Interaction not found.');
+            }
+
+            if (!canAccessUserData(req, interaction.userId)) {
+                return sendError(res, 403, 'FORBIDDEN', 'You can only access your own data or must be an admin.', {
+                    requiredOwnerId: interaction.userId
+                });
+            }
+
+            const [savedItem] = await findOrCreateLearningItems({
+                userId: parseInt(req.body.userId, 10),
+                language: req.body.language,
+                items: [
+                    {
+                        type: req.body.type,
+                        sourceText: req.body.sourceText,
+                        meaning: req.body.meaning,
+                        context: req.body.context || null
+                    }
+                ]
+            });
+
+            await interaction.addLearningItem(savedItem);
+            interaction.suggestedLearningItems = removeAcceptedSuggestion(interaction, req.body.type, req.body.sourceText);
+            await interaction.save();
+
+            return sendSuccess(res, 201, savedItem);
+        }
+
         const newItem = await LearningItem.create({
             userId: parseInt(req.body.userId, 10),
             language: req.body.language,
@@ -82,7 +123,8 @@ const createLearningItem = async (req, res) => {
             sourceText: req.body.sourceText,
             normalizedSourceText: normalizeSourceText(req.body.sourceText),
             meaning: req.body.meaning,
-            context: req.body.context || null
+            context: req.body.context || null,
+            isFavorite: Boolean(req.body.isFavorite)
         });
 
         return sendSuccess(res, 201, newItem);
@@ -108,7 +150,7 @@ const updateLearningItem = async (req, res) => {
             });
         }
 
-        ['language', 'type', 'sourceText', 'meaning', 'context'].forEach(field => {
+        ['language', 'type', 'sourceText', 'meaning', 'context', 'isFavorite'].forEach(field => {
             if (req.body[field] !== undefined) {
                 item[field] = req.body[field];
             }
