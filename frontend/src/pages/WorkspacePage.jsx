@@ -2,6 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { createInteraction } from '../services/api';
+import DifficultyFeedback from '../components/DifficultyFeedback';
+import HelperToolbar from '../components/HelperToolbar';
+import LearningSuggestions from '../components/LearningSuggestions';
 import LanguageMultiSelect from '../components/LanguageMultiSelect';
 import { formatLanguages, getLearningLanguages, parseLanguages } from '../utils/languages';
 import { LEVELS, getLevelLabel } from '../utils/levels';
@@ -47,14 +50,14 @@ function getSpeechRecognition() {
 
 function getInitialMessages(mode) {
   if (mode === 'translate') {
-    return [{ role: 'beaver', parts: [startMessages.translate] }];
+    return [{ role: 'beaver', text: startMessages.translate }];
   }
 
   return [];
 }
 
-// --- Build a BeaverUP chat response ---
-function buildBeaverMessage(interaction) {
+// --- Coaching commentary fallback when the AI didn't return a displayMessage ---
+function buildFallbackCoachingParts(interaction) {
   const parts = [];
 
   if (interaction.nativeRewrite) {
@@ -65,27 +68,13 @@ function buildBeaverMessage(interaction) {
     parts.push(`Higher-level version: ${interaction.higherLevelRewrite}`);
   }
 
-  if (interaction.storyText) {
-    parts.push(interaction.storyText);
-  }
-
   if (interaction.wordTranslations?.length > 0) {
     interaction.wordTranslations.forEach(item => {
       parts.push(`${item.sourceText}: ${item.translation}`);
     });
   }
 
-  if (interaction.translation) {
-    Object.entries(interaction.translation).forEach(([language, translation]) => {
-      parts.push(`${language}: ${translation}`);
-    });
-  }
-
-  if (interaction.nextPrompt) {
-    parts.push(`Next: ${interaction.nextPrompt}`);
-  }
-
-  return parts.length > 0 ? parts : ['Practice response saved.'];
+  return parts;
 }
 
 function ThinkingMessage() {
@@ -98,9 +87,79 @@ function ThinkingMessage() {
   );
 }
 
+// --- Render one AI turn: natural message, details, suggestions, feedback, helpers ---
+function BeaverTurn({ changingQuestion, interaction, isLatest, onChangeQuestion, onFeedbackResult, onSuggestionSaved }) {
+  const [showDetails, setShowDetails] = useState(false);
+
+  const fallbackCoachingParts = buildFallbackCoachingParts(interaction);
+  const hasRewriteDetails = Boolean(interaction.nativeRewrite || interaction.higherLevelRewrite);
+  const showExercise = isLatest && interaction.mode !== 'translate' && Boolean(interaction.nextPrompt);
+  const canChangeQuestion = showExercise && interaction.mode === 'conversation';
+
+  return (
+    <div className="message beaver-message">
+      <span>BeaverUP</span>
+
+      {interaction.displayMessage ? (
+        <p>{interaction.displayMessage}</p>
+      ) : fallbackCoachingParts.length > 0 ? (
+        fallbackCoachingParts.map(part => <p key={part}>{part}</p>)
+      ) : (
+        <p>Nice work!</p>
+      )}
+
+      {interaction.displayMessage && hasRewriteDetails && (
+        <button className="details-toggle" onClick={() => setShowDetails(current => !current)} type="button">
+          {showDetails ? 'Hide details' : 'Show details'}
+        </button>
+      )}
+
+      {showDetails && (
+        <div className="beaver-message-details">
+          {interaction.nativeRewrite && <p>Native version: {interaction.nativeRewrite}</p>}
+          {interaction.higherLevelRewrite && <p>Higher-level version: {interaction.higherLevelRewrite}</p>}
+        </div>
+      )}
+
+      {interaction.storyText && <p className="beaver-primary-text">{interaction.storyText}</p>}
+
+      {interaction.translation && (
+        <div className="beaver-translation">
+          {Object.entries(interaction.translation).map(([language, translation]) => (
+            <p key={language}>
+              <strong>{language}:</strong> {translation}
+            </p>
+          ))}
+        </div>
+      )}
+
+      {interaction.nextPrompt && <p className="beaver-question">{interaction.nextPrompt}</p>}
+
+      {showExercise && (
+        <HelperToolbar
+          glossary={interaction.glossary}
+          nextPromptTranslation={interaction.nextPromptTranslation}
+          onChangeQuestion={() => onChangeQuestion(interaction)}
+          sendingChangeQuestion={changingQuestion}
+          showChangeQuestion={canChangeQuestion}
+        />
+      )}
+
+      <LearningSuggestions
+        interactionId={interaction.interactionId}
+        language={interaction.language}
+        onSaved={onSuggestionSaved}
+        suggestions={interaction.suggestedLearningItems}
+      />
+
+      {showExercise && <DifficultyFeedback interactionId={interaction.interactionId} onResult={onFeedbackResult} />}
+    </div>
+  );
+}
+
 // --- Render practice workspace ---
 function WorkspacePage() {
-  const { user } = useAuth();
+  const { updateUser, user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const initialMode = searchParams.get('mode') || 'conversation';
   const resolvedInitialMode = ['conversation', 'story', 'translate'].includes(initialMode) ? initialMode : 'conversation';
@@ -120,10 +179,22 @@ function WorkspacePage() {
   const [userInput, setUserInput] = useState('');
   const [lastStory, setLastStory] = useState(null);
   const [sending, setSending] = useState(false);
+  const [changingQuestion, setChangingQuestion] = useState(false);
   const [error, setError] = useState('');
   const [isListening, setIsListening] = useState(false);
+  const [levelSuggestion, setLevelSuggestion] = useState(null);
   const recognitionRef = useRef(null);
   const showStartButton = ['conversation', 'story'].includes(settings.mode) && !sessionStarted;
+
+  const latestBeaverInteractionIndex = useMemo(() => {
+    for (let index = messages.length - 1; index >= 0; index -= 1) {
+      if (messages[index].role === 'beaver' && messages[index].interaction) {
+        return index;
+      }
+    }
+
+    return -1;
+  }, [messages]);
 
   const submitLabel = useMemo(() => {
     if (settings.mode === 'story') {
@@ -181,6 +252,7 @@ function WorkspacePage() {
       setSessionStarted(value === 'translate');
       setLastStory(null);
       setUserInput('');
+      setLevelSuggestion(null);
       recognitionRef.current?.stop();
       setIsListening(false);
       setError('');
@@ -248,10 +320,7 @@ function WorkspacePage() {
     try {
       const interaction = await createInteraction(buildInteractionPayload(true));
 
-      setMessages(currentMessages => [
-        ...currentMessages,
-        { role: 'beaver', parts: buildBeaverMessage(interaction) }
-      ]);
+      setMessages(currentMessages => [...currentMessages, { role: 'beaver', interaction }]);
       setSessionStarted(true);
 
       if (settings.mode === 'story') {
@@ -293,8 +362,8 @@ function WorkspacePage() {
 
       setMessages(currentMessages => [
         ...currentMessages,
-        { role: 'user', parts: [userMessage] },
-        { role: 'beaver', parts: buildBeaverMessage(interaction) }
+        { role: 'user', text: userMessage },
+        { role: 'beaver', interaction }
       ]);
 
       if (settings.mode === 'story') {
@@ -306,6 +375,50 @@ function WorkspacePage() {
       setError(err.message);
     } finally {
       setSending(false);
+    }
+  }
+
+  // --- Ask for a different question at the same language/level/topic ---
+  async function handleChangeQuestion(interaction) {
+    setError('');
+    setChangingQuestion(true);
+
+    try {
+      const payload = {
+        mode: 'conversation',
+        language: interaction.language,
+        level: interaction.level,
+        interactionType: 'conversation_turn',
+        changeQuestion: true,
+        avoidRepeating: interaction.nextPrompt
+      };
+
+      if (interaction.topic) {
+        payload.topic = interaction.topic;
+      }
+
+      const newInteraction = await createInteraction(payload);
+      setMessages(currentMessages => [...currentMessages, { role: 'beaver', interaction: newInteraction }]);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setChangingQuestion(false);
+    }
+  }
+
+  // --- Accept or dismiss an adaptive level-change suggestion ---
+  async function handleLevelSuggestionAccept() {
+    if (!levelSuggestion) {
+      return;
+    }
+
+    try {
+      await updateUser({ currentLevel: levelSuggestion.suggestedLevel });
+      setSettings(currentSettings => ({ ...currentSettings, level: levelSuggestion.suggestedLevel }));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLevelSuggestion(null);
     }
   }
 
@@ -379,20 +492,57 @@ function WorkspacePage() {
 
         {error && <p className="status-message error-message">{error}</p>}
 
+        {levelSuggestion && (
+          <div className="level-suggestion-banner">
+            <p>{levelSuggestion.message}</p>
+            <div className="level-suggestion-actions">
+              <button onClick={handleLevelSuggestionAccept} type="button">
+                {levelSuggestion.direction === 'up' ? 'Yes, level me up' : 'Sounds good'}
+              </button>
+              <button onClick={() => setLevelSuggestion(null)} type="button">
+                Not yet
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="chat-thread">
           {showStartButton && messages.length === 0 && !sending && (
             <div className="start-empty-state">
               <p>{settings.mode === 'story' ? 'Start a short story from your settings.' : 'Start a conversation from your settings.'}</p>
             </div>
           )}
-          {messages.map((message, index) => (
-            <div className={`message ${message.role === 'user' ? 'user-message' : 'beaver-message'}`} key={`${message.role}-${index}`}>
-              <span>{message.role === 'user' ? 'You' : 'BeaverUP'}</span>
-              {message.parts.map(part => (
-                <p key={part}>{part}</p>
-              ))}
-            </div>
-          ))}
+          {messages.map((message, index) => {
+            if (message.role === 'user') {
+              return (
+                <div className="message user-message" key={`user-${index}`}>
+                  <span>You</span>
+                  <p>{message.text}</p>
+                </div>
+              );
+            }
+
+            if (message.interaction) {
+              return (
+                <BeaverTurn
+                  changingQuestion={changingQuestion}
+                  interaction={message.interaction}
+                  isLatest={index === latestBeaverInteractionIndex}
+                  key={`beaver-${message.interaction.interactionId}-${index}`}
+                  onChangeQuestion={handleChangeQuestion}
+                  onFeedbackResult={setLevelSuggestion}
+                  onSuggestionSaved={() => {}}
+                />
+              );
+            }
+
+            return (
+              <div className="message beaver-message" key={`beaver-static-${index}`}>
+                <span>BeaverUP</span>
+                <p>{message.text}</p>
+              </div>
+            );
+          })}
           {sending && <ThinkingMessage />}
         </div>
 

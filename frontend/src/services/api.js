@@ -152,6 +152,14 @@ function deleteInteraction(interactionId) {
   });
 }
 
+// --- Submit how easy/hard an exercise felt ---
+function submitDifficultyFeedback(interactionId, feedback) {
+  return apiRequest(`/interactions/${interactionId}/difficulty-feedback`, {
+    method: 'POST',
+    body: JSON.stringify({ feedback })
+  });
+}
+
 export {
   API_BASE_URL,
   clearStoredUser,
@@ -167,6 +175,7 @@ export {
   logoutUser,
   setStoredUser,
   signupUser,
+  submitDifficultyFeedback,
   updateLearningItem,
   updateCurrentUser
 };

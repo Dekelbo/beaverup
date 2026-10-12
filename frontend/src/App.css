@@ -646,6 +646,224 @@ p {
   margin-bottom: 0;
 }
 
+.details-toggle {
+  background: transparent;
+  color: var(--green-dark);
+  font-size: 0.82rem;
+  min-height: 32px;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.details-toggle:hover {
+  background: transparent;
+  transform: none;
+}
+
+.beaver-message-details {
+  background: var(--summary-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 10px 12px;
+}
+
+.beaver-message-details p {
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.beaver-primary-text {
+  background: var(--summary-bg);
+  border-radius: 8px;
+  font-style: italic;
+  padding: 10px 12px;
+}
+
+.beaver-translation p {
+  margin-bottom: 4px;
+}
+
+.beaver-translation p:last-child {
+  margin-bottom: 0;
+}
+
+.beaver-question {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.helper-toolbar {
+  margin-top: 10px;
+}
+
+.helper-toolbar-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.helper-button {
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  color: var(--green-dark);
+  font-size: 0.82rem;
+  min-height: 34px;
+  padding: 0 12px;
+}
+
+.helper-button:hover {
+  background: var(--summary-bg);
+  color: var(--green-dark);
+}
+
+.helper-translation {
+  background: var(--summary-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin: 8px 0 0;
+  padding: 8px 12px;
+}
+
+.glossary-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.glossary-term {
+  background: var(--summary-bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 0.82rem;
+  padding: 6px 10px;
+}
+
+.glossary-term strong {
+  color: var(--green-dark);
+}
+
+.learning-suggestions {
+  margin-top: 12px;
+}
+
+.suggestions-heading {
+  color: var(--brown);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.suggestions-saved-note {
+  color: var(--green-dark);
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin: 10px 0 0;
+}
+
+.suggestion-list {
+  display: grid;
+  gap: 8px;
+}
+
+.suggestion-chip {
+  align-items: center;
+  background: var(--summary-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  padding: 10px 12px;
+}
+
+.suggestion-chip-text {
+  display: grid;
+  gap: 2px;
+}
+
+.suggestion-chip-text strong {
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+.suggestion-chip-text span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.suggestion-chip button {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 14px;
+}
+
+.difficulty-feedback {
+  margin-top: 12px;
+}
+
+.difficulty-feedback-heading {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.difficulty-feedback-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.difficulty-button {
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.82rem;
+  min-height: 34px;
+  padding: 0 12px;
+}
+
+.difficulty-button:hover {
+  background: var(--summary-bg);
+  color: var(--text);
+}
+
+.difficulty-button.is-selected {
+  background: var(--green);
+  color: #fff;
+}
+
+.level-suggestion-banner {
+  background: var(--summary-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+}
+
+.level-suggestion-banner p {
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.level-suggestion-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.level-suggestion-actions button {
+  min-height: 36px;
+  padding: 0 14px;
+}
+
 .thinking-message {
   display: grid;
   gap: 12px;
