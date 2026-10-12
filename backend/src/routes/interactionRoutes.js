@@ -1,6 +1,7 @@
 const express = require('express');
 const interactionController = require('../controllers/interactionController');
 const { isAdmin, isOwnerOrAdminByBodyUserId, isOwnerOrAdminByUserParam } = require('../middleware/auth');
+const { aiLimiter } = require('../middleware/rateLimit');
 const {
     validateArrayField,
     validateEnum,
@@ -31,6 +32,7 @@ router.get('/:id', validateInteractionId, interactionController.getInteractionBy
 router.post('/:id/difficulty-feedback', validateInteractionId, interactionController.submitDifficultyFeedback);
 router.post(
     '/',
+    aiLimiter,
     validateRequiredFields(interactionRequiredFields, 'Missing required interaction fields.'),
     validateUserIdBody,
     validateMode,

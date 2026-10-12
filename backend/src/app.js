@@ -1,5 +1,6 @@
 const cors = require('cors');
 const express = require('express');
+const helmet = require('helmet');
 const http = require('http');
 const { testDatabaseConnection } = require('./config/database');
 const env = require('./config/env');
@@ -14,6 +15,12 @@ const { initializeSocket } = require('./services/socketService');
 const { sendError, sendSuccess } = require('./utils/responses');
 
 const app = express();
+
+// Render sits in front of this app as a single reverse proxy - trust only that one hop
+// so req.ip reflects the real client IP (required for rate limiting to work correctly).
+app.set('trust proxy', 1);
+
+app.use(helmet());
 
 const isAllowedOrigin = origin => {
     return !origin || env.frontendUrls.includes(origin);
@@ -65,6 +72,7 @@ app.use((err, req, res, next) => {
         return sendError(res, 400, 'INVALID_JSON', 'Request body must be valid JSON.');
     }
 
+    console.error(`Unhandled error on ${req.method} ${req.originalUrl}:`, err);
     return sendError(res, 500, 'INTERNAL_SERVER_ERROR', 'Unexpected server error.');
 });
 
