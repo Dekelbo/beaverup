@@ -60,12 +60,12 @@ function getInitialMessages(mode) {
 function buildFallbackCoachingParts(interaction) {
   const parts = [];
 
-  if (interaction.nativeRewrite) {
-    parts.push(`Native version: ${interaction.nativeRewrite}`);
+  if (interaction.nativeRewrite && interaction.nativeRewrite !== interaction.userInput) {
+    parts.push(`Corrected version: ${interaction.nativeRewrite}`);
   }
 
-  if (interaction.higherLevelRewrite) {
-    parts.push(`Higher-level version: ${interaction.higherLevelRewrite}`);
+  if (interaction.higherLevelRewrite && interaction.higherLevelRewrite !== interaction.nativeRewrite) {
+    parts.push(`More advanced version: ${interaction.higherLevelRewrite}`);
   }
 
   if (interaction.wordTranslations?.length > 0) {
@@ -89,10 +89,7 @@ function ThinkingMessage() {
 
 // --- Render one AI turn: natural message, details, suggestions, feedback, helpers ---
 function BeaverTurn({ changingQuestion, interaction, isLatest, onChangeQuestion, onFeedbackResult, onSuggestionSaved }) {
-  const [showDetails, setShowDetails] = useState(false);
-
   const fallbackCoachingParts = buildFallbackCoachingParts(interaction);
-  const hasRewriteDetails = Boolean(interaction.nativeRewrite || interaction.higherLevelRewrite);
   const showExercise = isLatest && interaction.mode !== 'translate' && Boolean(interaction.nextPrompt);
   const canChangeQuestion = showExercise && interaction.mode === 'conversation';
 
@@ -106,19 +103,6 @@ function BeaverTurn({ changingQuestion, interaction, isLatest, onChangeQuestion,
         fallbackCoachingParts.map(part => <p key={part}>{part}</p>)
       ) : (
         <p>Nice work!</p>
-      )}
-
-      {interaction.displayMessage && hasRewriteDetails && (
-        <button className="details-toggle" onClick={() => setShowDetails(current => !current)} type="button">
-          {showDetails ? 'Hide details' : 'Show details'}
-        </button>
-      )}
-
-      {showDetails && (
-        <div className="beaver-message-details">
-          {interaction.nativeRewrite && <p>Native version: {interaction.nativeRewrite}</p>}
-          {interaction.higherLevelRewrite && <p>Higher-level version: {interaction.higherLevelRewrite}</p>}
-        </div>
       )}
 
       {interaction.storyText && <p className="beaver-primary-text">{interaction.storyText}</p>}
@@ -353,24 +337,26 @@ function WorkspacePage() {
       return;
     }
 
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+    }
+
+    const payload = buildInteractionPayload(false);
+    const userMessage = userInput.trim() || 'Generate a story.';
+
+    setMessages(currentMessages => [...currentMessages, { role: 'user', text: userMessage }]);
+    setUserInput('');
     setSending(true);
 
     try {
-      const payload = buildInteractionPayload(false);
-      const userMessage = userInput.trim() || 'Generate a story.';
       const interaction = await createInteraction(payload);
 
-      setMessages(currentMessages => [
-        ...currentMessages,
-        { role: 'user', text: userMessage },
-        { role: 'beaver', interaction }
-      ]);
+      setMessages(currentMessages => [...currentMessages, { role: 'beaver', interaction }]);
 
       if (settings.mode === 'story') {
         setLastStory(interaction);
       }
-
-      setUserInput('');
     } catch (err) {
       setError(err.message);
     } finally {

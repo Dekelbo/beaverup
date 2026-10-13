@@ -195,14 +195,16 @@ const createInteraction = async (req, res) => {
             getRecentTurns(userId, req.body.language)
         ]);
 
+        const lastNextPrompt = recentTurns.length > 0 ? recentTurns[recentTurns.length - 1].nextPrompt : null;
+
         const interactionInput = {
             ...req.body,
             interactionType,
             nativeLanguage: user ? user.userNativeLanguage : null,
             recentTurns,
             avoidRepeating: req.body.changeQuestion
-                ? req.body.avoidRepeating || req.body.previousTopic || null
-                : null
+                ? req.body.avoidRepeating || req.body.previousTopic || lastNextPrompt
+                : lastNextPrompt
         };
 
         const aiResult = normalizeConversationResult(interactionInput, await generatePracticeResponse(interactionInput));
