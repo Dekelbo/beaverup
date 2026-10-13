@@ -12,29 +12,32 @@ import SignupPage from './pages/SignupPage';
 import WorkspacePage from './pages/WorkspacePage';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { WorkspaceSessionProvider } from './context/WorkspaceSessionContext';
 
 // --- Configure app routes and shared theme ---
 function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route element={<ProtectedRoute />}>
-              <Route element={<Layout />}>
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/beaver-hub" element={<BeaverHubPage />} />
-                <Route path="/workspace" element={<WorkspacePage />} />
-                <Route path="/progress" element={<ProgressPage />} />
-                <Route path="/history" element={<HistoryPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
+        <WorkspaceSessionProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Navigate to="/login" replace />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route element={<ProtectedRoute />}>
+                <Route element={<Layout />}>
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/beaver-hub" element={<BeaverHubPage />} />
+                  <Route path="/workspace" element={<WorkspacePage />} />
+                  <Route path="/progress" element={<ProgressPage />} />
+                  <Route path="/history" element={<HistoryPage />} />
+                  <Route path="/settings" element={<SettingsPage />} />
+                </Route>
               </Route>
-            </Route>
-          </Routes>
-        </BrowserRouter>
+            </Routes>
+          </BrowserRouter>
+        </WorkspaceSessionProvider>
       </AuthProvider>
     </ThemeProvider>
   );

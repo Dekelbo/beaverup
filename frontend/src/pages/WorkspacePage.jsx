@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useWorkspaceSession } from '../context/WorkspaceSessionContext';
 import { createInteraction } from '../services/api';
 import DifficultyFeedback from '../components/DifficultyFeedback';
 import HelperToolbar from '../components/HelperToolbar';
@@ -141,27 +142,83 @@ function BeaverTurn({ changingQuestion, interaction, isLatest, onChangeQuestion,
   );
 }
 
+// --- Build a fresh session for a given mode ---
+function buildDefaultSession(mode, defaultLanguage, currentLevel) {
+  return {
+    settings: {
+      mode,
+      language: defaultLanguage,
+      level: currentLevel || 'A2',
+      topic: '',
+      wordGroup: ''
+    },
+    messages: getInitialMessages(mode),
+    sessionStarted: mode === 'translate',
+    lastStory: null,
+    userInput: ''
+  };
+}
+
 // --- Render practice workspace ---
 function WorkspacePage() {
   const { updateUser, user } = useAuth();
+  const { session, setSession } = useWorkspaceSession();
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialMode = searchParams.get('mode') || 'conversation';
-  const resolvedInitialMode = ['conversation', 'story', 'translate'].includes(initialMode) ? initialMode : 'conversation';
+  const modeParam = searchParams.get('mode');
+  const resolvedInitialMode = ['conversation', 'story', 'translate'].includes(modeParam) ? modeParam : 'conversation';
   const learningLanguages = getLearningLanguages(user);
   const defaultLanguage = learningLanguages[0] || '';
-  const [settings, setSettings] = useState({
-    mode: resolvedInitialMode,
-    language: defaultLanguage,
-    level: user?.currentLevel || 'A2',
-    topic: '',
-    wordGroup: ''
-  });
-  const [messages, setMessages] = useState([
-    ...getInitialMessages(resolvedInitialMode)
-  ]);
-  const [sessionStarted, setSessionStarted] = useState(resolvedInitialMode === 'translate');
-  const [userInput, setUserInput] = useState('');
-  const [lastStory, setLastStory] = useState(null);
+
+  // Resume the saved session when returning to this page; start fresh only when there is
+  // none yet, or the link that brought us here explicitly asked for a different mode.
+  // Keyed on modeParam (not just mount) because switching modes via a link/nav click
+  // re-renders this same route element instead of remounting it.
+  useEffect(() => {
+    if (!session || (modeParam && session.settings.mode !== modeParam)) {
+      setSession(buildDefaultSession(resolvedInitialMode, defaultLanguage, user?.currentLevel));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modeParam]);
+
+  const effectiveSession = session || buildDefaultSession(resolvedInitialMode, defaultLanguage, user?.currentLevel);
+  const { settings, messages, sessionStarted, lastStory, userInput } = effectiveSession;
+
+  function updateSession(updater) {
+    setSession(current => {
+      const base = current || effectiveSession;
+      return typeof updater === 'function' ? updater(base) : { ...base, ...updater };
+    });
+  }
+
+  function setSettings(updater) {
+    updateSession(current => ({
+      ...current,
+      settings: typeof updater === 'function' ? updater(current.settings) : updater
+    }));
+  }
+
+  function setMessages(updater) {
+    updateSession(current => ({
+      ...current,
+      messages: typeof updater === 'function' ? updater(current.messages) : updater
+    }));
+  }
+
+  function setSessionStarted(value) {
+    updateSession(current => ({ ...current, sessionStarted: value }));
+  }
+
+  function setLastStory(value) {
+    updateSession(current => ({ ...current, lastStory: value }));
+  }
+
+  function setUserInput(value) {
+    updateSession(current => ({
+      ...current,
+      userInput: typeof value === 'function' ? value(current.userInput) : value
+    }));
+  }
+
   const [sending, setSending] = useState(false);
   const [changingQuestion, setChangingQuestion] = useState(false);
   const [error, setError] = useState('');
